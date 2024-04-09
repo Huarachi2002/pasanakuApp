@@ -1,0 +1,5 @@
+
+
+abstract class UserDatasource {
+  getUsers();
+}
