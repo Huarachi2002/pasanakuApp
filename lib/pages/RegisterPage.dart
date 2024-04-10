@@ -6,10 +6,17 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   static const name = 'register-screen';
   RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   String nombre_text = '';
   String telefono_text = '';
   String ci_text = '';
@@ -19,30 +26,37 @@ class RegisterPage extends StatelessWidget {
 
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:3001/api',
-    )
+      baseUrl: 'http://192.168.100.17:3001/api',
+    ),
   );
 
   Future<void> registerUser() async{
     try {
-      final response = await Dio().post(
+      final response = await dio.post(
         '/player',
         data: {
           "email":correo_text,
           "name": nombre_text,
           "ci": ci_text,
           "password": password_text,
+          "address": "prueba",
           "telephone": telefono_text,
         }
       );
 
       print(response.data);
-    } catch (e) {
-      print(e);
-    }
-
-    
-    
+      context.push('/home');
+    }on DioException catch (e) {
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
 
   }
 
@@ -259,7 +273,6 @@ class RegisterPage extends StatelessWidget {
                         final isValid = _formKey.currentState!.validate();
                         if(!isValid) return;
                         registerUser();
-                        context.push('/home');
                     },
                     child: const Text(
                       'Registrarme', 

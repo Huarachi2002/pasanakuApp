@@ -6,20 +6,26 @@ import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
 
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const name = 'login-screen';
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String correo_text = '';
-
+  String errorMessage = '';
+  String errorPassword = '';
   String password_text = '';
 
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:3001/api',
-    )
+      baseUrl: 'http://192.168.100.17:3001/api',
+    ),
   );
 
   Future<void> loginUser() async{
@@ -32,11 +38,30 @@ class LoginPage extends StatelessWidget {
           'password': password_text,
         },
       );
-      print(response.data);
-    } catch (e) {
-      print(e);
-    }
+
+      print(response.statusCode);
+      context.push('/home');
+
+    }on DioException catch (e) {
+        if(e.response != null && e.response!.data['message'] == null){
+          // print('data: ${e.response!.data}');
+          // print('headers: ${e.response!.headers}');
+          // print('requestOptions: ${e.response!.requestOptions}');
+          setState(() {
+            errorMessage = e.response!.data['errors']['details'][0]["msg"];
+          });
+          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          setState(() {
+            errorPassword = e.response!.data['message'];
+          });
+          // print('requestOptions: ${e.requestOptions}');
+          // print(e.message);
+        }
+    } 
+    
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,7 +75,6 @@ class LoginPage extends StatelessWidget {
             ),
             const Row(
               children: [
-                
                 SizedBox(
                   width: 20,
                 ),
@@ -113,7 +137,7 @@ class LoginPage extends StatelessWidget {
                   icon: const Icon(Icons.email_outlined, size: 25,),
                   label: 'Correo Electronico',
                   hint: 'example@gmail.com',
-                  // errorMessage: 'Correo invalido',
+                  errorMessage: errorMessage == '' ? null : errorMessage,
                   onChanged: (value) {
                     // _formKey.currentState?.validate();
                     correo_text = value;
@@ -129,7 +153,7 @@ class LoginPage extends StatelessWidget {
                 )
               ),
             ),
-            const SizedBox(height: 50,),
+            const SizedBox(height: 30,),
         
             Padding(
               padding: const EdgeInsets.fromLTRB(45,0,45,0),
@@ -138,7 +162,7 @@ class LoginPage extends StatelessWidget {
                 child: CustomTextFormField(
                   icon: const Icon(Icons.vpn_key_rounded, size: 25,),
                   label: 'Contraseña',
-                  // errorMessage: 'Contraseña incorrecta',
+                  errorMessage: errorPassword == '' ? null : errorPassword,
                   obscureText: true,
                   onChanged: (value) {
                     // _formKey.currentState?.validate();
@@ -180,7 +204,7 @@ class LoginPage extends StatelessWidget {
                     final isValid = _formKey.currentState!.validate();
                     if(!isValid) return;
                     loginUser();
-                    context.push('/home');
+                    print('Error: ${errorMessage}');
                   }, 
                   style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),
