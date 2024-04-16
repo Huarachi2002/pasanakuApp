@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
+import 'package:provider/provider.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -40,7 +42,15 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       print(response.statusCode);
-      context.push('/home');
+      context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id']);
+      final response2 = await dio.get('/invitations/${correo_text}');
+      // print('Response Invitaciones: ${response2.data['data']}');
+      
+      if(response2.data['data'].length > 0){
+        context.push('/notificacion');
+      }else{
+        context.push('/home');
+      }
 
     }on DioException catch (e) {
         if(e.response != null && e.response!.data['message'] == null){

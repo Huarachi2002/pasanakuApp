@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   static const name = 'register-screen';
@@ -16,6 +18,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List msgError = [
+    'The email huarachi@gmail.com is already registered',
+    ''
+  ];
 
   String nombre_text = '';
   String telefono_text = '';
@@ -43,15 +49,22 @@ class _RegisterPageState extends State<RegisterPage> {
           "telephone": telefono_text,
         }
       );
-
-      print(response.data);
-      context.push('/home');
+      // print('Response register: ${response.data}');
+      context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id']);
+      final response2 = await dio.get('/invitations/${correo_text}');
+      // print('Response Invitaciones: ${response2.data['data']}');
+      
+      if(response2.data['data'].length > 0){
+        context.push('/notificacion');
+      }else{
+        context.push('/home');
+      }
     }on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
           print('headers: ${e.response!.headers}');
           print('requestOptions: ${e.response!.requestOptions}');
-          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
         }else{
           print('requestOptions: ${e.requestOptions}');
           print(e.message);

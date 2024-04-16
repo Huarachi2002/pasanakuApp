@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,8 +21,90 @@ class _HomePageState extends State<HomePage> {
   
   final filtro = ['Iniciado','Espera','Finalizado'];
 
-  final List<Map<String,String>> data = [
-    {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (value) {
+          setState(() {
+            currentIndex = value;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.double_arrow_rounded,),label: 'INICIADOS',),
+          BottomNavigationBarItem(icon: Icon(Icons.access_alarms_outlined),label: 'EN ESPERA'),
+          BottomNavigationBarItem(icon: Icon(Icons.assistant_photo_rounded),label: 'FINALIZADOS'),
+        ] 
+      ),
+      drawer: const Drawer(
+        backgroundColor: Color(0xFF666F88),
+      ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF318CE7),
+        title: const Center(
+          child: 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'PASANAKU', 
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none
+                    ),
+                  ),
+                  SizedBox(width: 15,),
+                  Image(
+                    image: AssetImage('assets/logo.png'),
+                    width: 50,
+                    height: 50
+                  ),
+                ],
+              ),
+
+        ),
+        actions: [
+          IconButton(
+            onPressed: (){
+              setState(() {
+                notification = !notification;
+              });
+              context.push('/notificacion');
+            }, 
+            icon: (notification) 
+              ?const Icon(Icons.notifications_active_rounded,color: Colors.amber,size: 30,) 
+              :const Icon(Icons.notifications, color: Colors.black,size: 30,)
+          )
+        ],
+      ),
+      body: _PartidaView(
+        filtro: filtro, 
+        currentIndex: currentIndex
+      )
+    );
+  } 
+}
+
+class _PartidaView extends StatefulWidget {
+  const _PartidaView({
+    required this.filtro,
+    required this.currentIndex,
+  });
+  final List<String> filtro;
+  final int currentIndex;
+
+  @override
+  State<_PartidaView> createState() => _PartidaViewState();
+}
+
+class _PartidaViewState extends State<_PartidaView> {
+  bool load = true;
+
+  String id = '';
+  List<Map<String,String>> data = [
+      {
       "title": "INICIADOS",
       "subtitle": '''Cuota: 1000 bs 
 Fecha Inicio: 15 Mar 2024, 8:20 PM''',
@@ -98,100 +181,55 @@ Fecha Inicio: 15 Mar 2024, 8:20 PM''',
       "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
       "estado": "Finalizado"
     },
-  ];
-  
-  
+    ];
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (value) {
-          setState(() {
-            currentIndex = value;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.double_arrow_rounded,),label: 'INICIADOS',),
-          BottomNavigationBarItem(icon: Icon(Icons.access_alarms_outlined),label: 'EN ESPERA'),
-          BottomNavigationBarItem(icon: Icon(Icons.assistant_photo_rounded),label: 'FINALIZADOS'),
-        ] 
-      ),
-      drawer: const Drawer(
-        backgroundColor: Color(0xFF666F88),
-      ),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF318CE7),
-        title: const Center(
-          child: 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'PASANAKU', 
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
-                    ),
-                  ),
-                  SizedBox(width: 15,),
-                  Image(
-                    image: AssetImage('assets/logo.png'),
-                    width: 50,
-                    height: 50
-                  ),
-                ],
-              ),
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: 'http://192.168.100.17:3001/api',
+    ),
+  );
 
-        ),
-        actions: [
-          IconButton(
-            onPressed: (){
-              setState(() {
-                notification = !notification;
-              });
-              context.push('/notificacion');
-            }, 
-            icon: (notification) 
-              ?const Icon(Icons.notifications_active_rounded,color: Colors.amber,size: 30,) 
-              :const Icon(Icons.notifications, color: Colors.black,size: 30,)
-          )
-        ],
-      ),
-      body: _PartidaView(
-        data: data, 
-        filtro: filtro, 
-        currentIndex: currentIndex
-      )
-    );
-  } 
-}
+  Future<void> getIdPlayer()async{
+    try {
+      final response = await dio.get('/player');
+      id = response.data['id'];
+    } on DioException catch (e) {
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
+  }
 
-class _PartidaView extends StatefulWidget {
-  const _PartidaView({
-    super.key,
-    required this.data,
-    required this.filtro,
-    required this.currentIndex,
-  });
-
-  final List<Map<String, String>> data;
-  final List<String> filtro;
-  final int currentIndex;
-
-  @override
-  State<_PartidaView> createState() => _PartidaViewState();
-}
-
-class _PartidaViewState extends State<_PartidaView> {
-  bool load = true;
+  Future<void> getPartidas() async{
+    try {
+      final response = await dio.get(
+        '/game/$id',
+      );
+      data = response.data['data'];
+    } on DioException catch (e) {
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // getPartidas();
     Timer(const Duration(seconds: 3), (){
       setState(() {
         load = !load;
@@ -241,20 +279,32 @@ class _PartidaViewState extends State<_PartidaView> {
                       ),
                   )
                   :
-                  const SizedBox(height: 20,),
+                  (data.isEmpty)
+                  ? const Center(
+                      child: Text(
+                        'Vacio', 
+                        style: TextStyle(
+                          color: Color(0xFF318CE7),
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none,
+                          fontSize: 19
+                        ),
+                      ),)
+                    
+                  :const SizedBox(height: 20,),
                   SizedBox(
                     height: 707,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: widget.data.length,
+                      itemCount: data.length,
                       itemBuilder: (context, index) {
-                        if(widget.data[index]['estado'] == widget.filtro[widget.currentIndex]) {
+                        if(data[index]['estado'] == widget.filtro[widget.currentIndex]) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Material(
                               child: ListTile(
                                 title: Text(
-                                  '${widget.data[index]["title"]}', 
+                                  '${data[index]["title"]}', 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -264,13 +314,13 @@ class _PartidaViewState extends State<_PartidaView> {
                                 ),
                                 leading: ClipOval(
                                   child: Image.network(
-                                    '${widget.data[index]['img']}',
+                                    '${data[index]['img']}',
                                     fit: BoxFit.cover,                       
                                   ),
                                 ),
                                 tileColor: const Color(0xFF318CE7),
                                 subtitle: Text(
-                                  '${widget.data[index]['subtitle']}',
+                                  '${data[index]['subtitle']}',
                                   style: const TextStyle(
                                     color: Colors.white
                                   ),

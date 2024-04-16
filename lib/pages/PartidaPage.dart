@@ -16,7 +16,7 @@ class _PartidaPageState extends State<PartidaPage> {
   int currentStep = 0;
   final List<Map<String,String>> data = [
     {
-      "nombre":"Erick"
+      "nombre":"Erick (Yo)"
     },
     {
       "nombre":"Moiso"
@@ -333,22 +333,46 @@ class _PartidaPageState extends State<PartidaPage> {
                           ),
                         ),
                       ),
-                      // SingleChildScrollView(
-                      //   scrollDirection: Axis.horizontal,
-                      //   child: Stepper(
-                      //     type: StepperType.horizontal,
-                      //     currentStep: currentStep,
-
-                      //     steps: (
-                      //       itemCount: 3,
-                      //       scrollDirection: Axis.horizontal,
-                      //       itemBuilder: (context, index) {
-                      //         return Step(title: title, content: content)
-                      //       },
-                            
-                      //     )
-                      //   ),
-                      // )
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: SizedBox(
+                          height: 70,
+                          width: double.infinity,
+                          child: Container(
+                             decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)
+                              ),
+                            child: Center(
+                              child: ListView.builder(
+                                itemCount: 10,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.only(left: 20),
+                                itemBuilder: (context, index) {
+                                  return Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(50)
+                                        ),
+                                        child: Center(child: Text('${index+1}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
+                                      ),
+                                      (index != 9)
+                                        ?const SizedBox(width: 20,child: Divider(color: Colors.grey,))
+                                        :const SizedBox(width: 20,)
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

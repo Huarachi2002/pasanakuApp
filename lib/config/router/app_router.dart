@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/pages/HomePAge.dart';
+import 'package:pasanaku_app/pages/InvitacionPage.dart';
 import 'package:pasanaku_app/pages/Login_Page.dart';
 import 'package:pasanaku_app/pages/NotificacionPage.dart';
 import 'package:pasanaku_app/pages/PartidaPage.dart';
@@ -32,6 +33,11 @@ final appRouter = GoRouter(
       path: '/partida',
       name: PartidaPage.name,
       builder: (context, state) => const PartidaPage(),
+    ),
+    GoRoute(
+      path: '/invitacion',
+      name: InvitacionPage.name,
+      builder: (context, state) => const InvitacionPage(),
     ),
     
   ]
