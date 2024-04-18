@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/providers/partida_provider.dart';
+import 'package:provider/provider.dart';
 
 class PartidaPage extends StatefulWidget {
     static const name = 'partida-screen';
@@ -14,35 +17,69 @@ class PartidaPage extends StatefulWidget {
 
 class _PartidaPageState extends State<PartidaPage> {
   int currentStep = 0;
-  final List<Map<String,String>> data = [
-    {
-      "nombre":"Erick (Yo)"
-    },
-    {
-      "nombre":"Moiso"
-    },
-    {
-      "nombre":"Quimet"
-    },
-    {
-      "nombre":"Huarachi"
-    },
-    {
-      "nombre":"Harold"
-    },
-    {
-      "nombre":"Samuel"
-    },
-    {
-      "nombre":"Dario"
-    },
-    {
-      "nombre":"Vera"
-    },
+  List<dynamic> data = [
+    // {
+    //   "nombre":"Erick (Yo)"
+    // },
+    // {
+    //   "nombre":"Moiso"
+    // },
+    // {
+    //   "nombre":"Quimet"
+    // },
+    // {
+    //   "nombre":"Huarachi"
+    // },
+    // {
+    //   "nombre":"Harold"
+    // },
+    // {
+    //   "nombre":"Samuel"
+    // },
+    // {
+    //   "nombre":"Dario"
+    // },
+    // {
+    //   "nombre":"Vera"
+    // },
   ];
+
+
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: 'http://192.168.100.17:3001/api',
+    ),
+  );
+
+  Future<void> getParticipants() async {
+    try {
+      final gameId = Provider.of<PartidaProvider>(context, listen: false).id;
+      final response = await dio.get('/participant/gamePk/$gameId');
+      data = response.data['data'];
+      print(data);
+    } on DioException catch (e) {
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
+    final partidaInfo = Provider.of<PartidaProvider>(context, listen: false);
     return Scaffold(
       drawer: const Drawer(
         backgroundColor: Color(0xFF666F88),
@@ -118,9 +155,9 @@ class _PartidaPageState extends State<PartidaPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [     
-                      const Text(
-                        'TITLEPARTIDA', 
-                        style: TextStyle(
+                      Text(
+                        partidaInfo.title, 
+                        style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.none,
@@ -131,11 +168,10 @@ class _PartidaPageState extends State<PartidaPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            'Pendiente', 
-                            style: TextStyle(
+                          Text(
+                            partidaInfo.estado, 
+                            style: const TextStyle(
                               color: Colors.black54,
-                              // fontWeight: FontWeight.bold,
                               decoration: TextDecoration.none,
                               fontSize: 18
                             ),
@@ -149,15 +185,24 @@ class _PartidaPageState extends State<PartidaPage> {
                               color: const Color(0xFFFAFF00)
                             ),
                           ),
+                          const SizedBox(width: 50,),
+                          Text(
+                            'Periodo:${partidaInfo.periodo}', 
+                            style: const TextStyle(
+                              color: Colors.black54,
+                              decoration: TextDecoration.none,
+                              fontSize: 18
+                            ),
+                          ),
                         ],
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(15),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Participantes 4/10', 
-                            style: TextStyle(
+                            'Participantes ${partidaInfo.cantPlayer}/${partidaInfo.playerTotal}', 
+                            style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.none,

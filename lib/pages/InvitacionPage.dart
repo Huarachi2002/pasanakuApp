@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/painting.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
@@ -17,7 +17,6 @@ class InvitacionPage extends StatefulWidget {
 }
 
 class _InvitacionPageState extends State<InvitacionPage> {
-  // int currentStep = 0;
   final List<Map<String,String>> data = [];
 
   final dio = Dio(
@@ -26,15 +25,19 @@ class _InvitacionPageState extends State<InvitacionPage> {
     ),
   );
 
-  Future<void> confirmInvit () async {
+  Future<void> confirmInvit (BuildContext context) async {
     try {
+      final player_id = Provider.of<UserProvider>(context,listen: false).id;
+      final invitacion_id = Provider.of<InvitacionProvider>(context,listen: false).id;
+
       final response = await dio.post(
         '/invitations/confirm',
         data: {
-          "player_id": context.watch<UserProvider>().id,
-          "invitation_id" : context.watch<InvitacionProvider>().id
+          "player_id": player_id,
+          "invitation_id" : invitacion_id
         }
       );
+      print('Invitacion Confirmada');
     } on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
@@ -48,14 +51,16 @@ class _InvitacionPageState extends State<InvitacionPage> {
     } 
   }
 
-  Future<void> denegInvit () async {
+  Future<void> denegInvit (BuildContext context) async {
     try {
+      final invitacion_id = Provider.of<InvitacionProvider>(context,listen: false).id;
       final response = await dio.delete(
         '/invitations/refuse',
         data: {
-          "invitation_id" : context.watch<InvitacionProvider>().id
+          "invitation_id" : invitacion_id
         }
       );
+      print('Invitacion Rechazada');
     } on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
@@ -128,7 +133,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                   child: InkWell(
                     child: const Icon(Icons.arrow_back_rounded,size: 50,),
                     onTap: () {
-                      context.pop();
+                      context.push('/home');
                     },
                   )
                 ),
@@ -181,7 +186,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  '${context.watch<InvitacionProvider>().nameAdmin}', 
+                                  context.watch<InvitacionProvider>().nameAdmin, 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -217,7 +222,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  '${context.watch<InvitacionProvider>().cuota}', 
+                                  context.watch<InvitacionProvider>().cuota, 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -235,7 +240,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  '${context.watch<InvitacionProvider>().fechaInit}', 
+                                  context.watch<InvitacionProvider>().fechaInit, 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -253,7 +258,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  '${context.watch<InvitacionProvider>().periodo}', 
+                                  context.watch<InvitacionProvider>().periodo, 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -270,7 +275,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-
+                              confirmInvit(context);
                             }, 
                             style: const ButtonStyle(
                               backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),
@@ -288,7 +293,9 @@ class _InvitacionPageState extends State<InvitacionPage> {
                             style: const ButtonStyle(
                               backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
                             ),
-                            onPressed:(){}, 
+                            onPressed:(){
+                              denegInvit(context);
+                            }, 
                             child: const Text(
                               'RECHAZAR INVITACIÓN',
                               style: TextStyle(

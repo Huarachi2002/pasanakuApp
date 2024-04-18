@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +18,6 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List msgError = [
-    'The email huarachi@gmail.com is already registered',
-    ''
-  ];
 
   String nombre_text = '';
   String telefono_text = '';
@@ -46,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
           "ci": ci_text,
           "password": password_text,
           "address": "prueba",
-          "telephone": telefono_text,
+          "telephone": '+591$telefono_text',
         }
       );
       // print('Response register: ${response.data}');
@@ -75,11 +71,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xff6AA9E9),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Container(
+        color: const Color(0xff6AA9E9),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
               const SizedBox(
@@ -155,7 +151,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         nombre_text = value;
                       },
                       validator:  (value) {
-                        if(value == null || value.isEmpty || value.trim().isEmpty ) return 'Campo requerido';
+                        if(value == null || value.isEmpty || value.trim().isEmpty) return 'Campo requerido';
+                        if(value.length < 6) return 'Debe tener mas de 6 caracteres';
                         return null;
                       },
                     )
@@ -267,6 +264,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       validator: (value) {
                         if(value == null || value.isEmpty || value.trim().isEmpty ) return 'Campo requerido';
                         if(value.length < 6) return 'Mas de 6 letras';
+                        if(value != password_text) return 'La contraseña no coinciden';
                         return null;
                       },
                     )

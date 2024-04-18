@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pasanaku_app/models/Invitaciones.dart';
+// import 'package:pasanaku_app/models/Invitaciones.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +29,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
     try {
       final email = context.watch<UserProvider>().userEmail;
       final response = await dio.get('/invitations/$email');
-      print('Response Invitacion: ${response.data['data']}');
+      // print('Response Invitacion: ${response.data['data']}');
       data = response.data['data'];
       // print(data[0]['game']);
       // print('Response Data: $data');
@@ -124,7 +122,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.pop();
+                        context.push('/home');
                       },
                     )
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class InvitacionProvider extends ChangeNotifier{
+class InvitacionProvider with ChangeNotifier{
   String id;
   String nameAdmin;
   String capacidad;

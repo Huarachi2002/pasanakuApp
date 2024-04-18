@@ -1,5 +1,0 @@
-
-
-abstract class UserDatasource {
-  getUsers();
-}

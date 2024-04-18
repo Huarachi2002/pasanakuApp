@@ -5,6 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/providers/partida_provider.dart';
+import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   static const name = 'home-screen';
@@ -19,7 +23,50 @@ class _HomePageState extends State<HomePage> {
   bool notification = true;
   bool load = true;
   
-  final filtro = ['Iniciado','Espera','Finalizado'];
+  List<dynamic> dataFiltrada = [];
+  final filtro = ['Iniciado','En espera','Finalizado'];
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: 'http://192.168.100.17:3001/api',
+    ),
+  );
+
+  List<dynamic> data = [];
+
+  Future<void> getPartidas() async{
+    try {
+      final playerId = Provider.of<UserProvider>(context,listen: false).id;
+      final response = await dio.get(
+        '/game/playerByPk/$playerId',
+      );
+      data = response.data['data'];
+      // print(data);
+    } on DioException catch (e) {
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
+  }
+
+  List<dynamic> filterData(){
+    return data.where((element) => element['estado'] == filtro[currentIndex]).toList();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getPartidas();
+    dataFiltrada = filterData();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +76,7 @@ class _HomePageState extends State<HomePage> {
         onTap: (value) {
           setState(() {
             currentIndex = value;
+            dataFiltrada = filterData();
           });
         },
         items: const [
@@ -42,29 +90,31 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
-        title: const Center(
-          child: 
+        title: context.select((NotificationsBloc bloc) 
+          => Center(
+            child: 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'PASANAKU', 
-                    style: TextStyle(
+                    '${bloc.state.status}', 
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
+                      decoration: TextDecoration.none,
+                      fontSize: 10
                     ),
                   ),
-                  SizedBox(width: 15,),
-                  Image(
+                  const SizedBox(width: 15,),
+                  const Image(
                     image: AssetImage('assets/logo.png'),
                     width: 50,
                     height: 50
                   ),
                 ],
               ),
-
-        ),
+            ),
+        ), 
         actions: [
           IconButton(
             onPressed: (){
@@ -76,10 +126,17 @@ class _HomePageState extends State<HomePage> {
             icon: (notification) 
               ?const Icon(Icons.notifications_active_rounded,color: Colors.amber,size: 30,) 
               :const Icon(Icons.notifications, color: Colors.black,size: 30,)
+          ),
+          IconButton(
+            onPressed: (){
+              context.read<NotificationsBloc>().requestPermission();  
+            },
+            icon: const Icon(Icons.settings)
           )
         ],
       ),
       body: _PartidaView(
+        data: dataFiltrada,
         filtro: filtro, 
         currentIndex: currentIndex
       )
@@ -90,10 +147,12 @@ class _HomePageState extends State<HomePage> {
 class _PartidaView extends StatefulWidget {
   const _PartidaView({
     required this.filtro,
-    required this.currentIndex,
+    required this.currentIndex, 
+    required this.data,
   });
   final List<String> filtro;
   final int currentIndex;
+  final List<dynamic> data;
 
   @override
   State<_PartidaView> createState() => _PartidaViewState();
@@ -101,135 +160,12 @@ class _PartidaView extends StatefulWidget {
 
 class _PartidaViewState extends State<_PartidaView> {
   bool load = true;
-
   String id = '';
-  List<Map<String,String>> data = [
-      {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "INICIADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Iniciado"
-    },
-    {
-      "title": "ESPERA",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Espera"
-    },
-    {
-      "title": "FINALIZADOS",
-      "subtitle": '''Cuota: 1000 bs 
-Fecha Inicio: 15 Mar 2024, 8:20 PM''',
-      "img": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Micro_de_Santa_Cruz.jpg",
-      "estado": "Finalizado"
-    },
-    ];
-
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: 'http://192.168.100.17:3001/api',
-    ),
-  );
-
-  Future<void> getIdPlayer()async{
-    try {
-      final response = await dio.get('/player');
-      id = response.data['id'];
-    } on DioException catch (e) {
-        if(e.response != null){
-          print('data: ${e.response!.data}');
-          print('headers: ${e.response!.headers}');
-          print('requestOptions: ${e.response!.requestOptions}');
-          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
-        }else{
-          print('requestOptions: ${e.requestOptions}');
-          print(e.message);
-        }
-    } 
-  }
-
-  Future<void> getPartidas() async{
-    try {
-      final response = await dio.get(
-        '/game/$id',
-      );
-      data = response.data['data'];
-    } on DioException catch (e) {
-        if(e.response != null){
-          print('data: ${e.response!.data}');
-          print('headers: ${e.response!.headers}');
-          print('requestOptions: ${e.response!.requestOptions}');
-          print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
-        }else{
-          print('requestOptions: ${e.requestOptions}');
-          print(e.message);
-        }
-    } 
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getPartidas();
     Timer(const Duration(seconds: 3), (){
       setState(() {
         load = !load;
@@ -279,7 +215,7 @@ Fecha Inicio: 15 Mar 2024, 8:20 PM''',
                       ),
                   )
                   :
-                  (data.isEmpty)
+                  (widget.data.isEmpty)
                   ? const Center(
                       child: Text(
                         'Vacio', 
@@ -296,15 +232,15 @@ Fecha Inicio: 15 Mar 2024, 8:20 PM''',
                     height: 707,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: data.length,
+                      itemCount: widget.data.length,
                       itemBuilder: (context, index) {
-                        if(data[index]['estado'] == widget.filtro[widget.currentIndex]) {
+                        if(widget.data[index]['estado'] == widget.filtro[widget.currentIndex]) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Material(
                               child: ListTile(
                                 title: Text(
-                                  '${data[index]["title"]}', 
+                                  '${widget.data[index]["name"]}', 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -313,20 +249,58 @@ Fecha Inicio: 15 Mar 2024, 8:20 PM''',
                                   ),
                                 ),
                                 leading: ClipOval(
-                                  child: Image.network(
-                                    '${data[index]['img']}',
-                                    fit: BoxFit.cover,                       
+                                  child: 
+                                    widget.data[index]['path_image'] == null 
+                                    ?Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        color: const Color(0xFFD9D9D9),
+                                      ),
+                                      child: const Image(
+                                        image: AssetImage('assets/groupImg.png'),
+                                        width: 40,
+                                        height: 40
+                                      ),
+                                    )
+                                    :Image.network(
+                                      '${widget.data[index]['path_image']}',
+                                      fit: BoxFit.cover,                       
                                   ),
                                 ),
                                 tileColor: const Color(0xFF318CE7),
-                                subtitle: Text(
-                                  '${data[index]['subtitle']}',
-                                  style: const TextStyle(
-                                    color: Colors.white
-                                  ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${widget.data[index]['description']}',
+                                      style: const TextStyle(
+                                        color: Colors.white
+                                      ),
+                                    ),
+                                    Text(
+                                      'Cuota: ${widget.data[index]['cuota']}',
+                                      style: const TextStyle(
+                                        color: Colors.white
+                                      ),
+                                    ),
+                                    Text(
+                                      'Fecha de Inicio: ${widget.data[index]['start_date'].toString().substring(0,10)}',
+                                      style: const TextStyle(
+                                        color: Colors.white
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.black,),
                                 onTap: (){
+                                  context.read<PartidaProvider>().changePartida(
+                                    newTitle: widget.data[index]['name'], 
+                                    newId: widget.data[index]['id'],
+                                    newEstado: widget.data[index]['estado'], 
+                                    newCuota: int.parse(widget.data[index]['cuota'].toString()), 
+                                    newPlayerTotal: int.parse(widget.data[index]['number_of_players'].toString()) , 
+                                    newPeriodo: widget.data[index]['period']['name']
+                                  );
                                   context.push('/partida');
                                 },
                               ),

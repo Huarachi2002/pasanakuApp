@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class UserProvider extends ChangeNotifier{
+class UserProvider with ChangeNotifier{
   String userEmail;
   String id;
 
