@@ -276,6 +276,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                           ElevatedButton(
                             onPressed: () {
                               confirmInvit(context);
+                              context.push('/home');
                             }, 
                             style: const ButtonStyle(
                               backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),
@@ -295,6 +296,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                             ),
                             onPressed:(){
                               denegInvit(context);
+                              context.pop();
                             }, 
                             child: const Text(
                               'RECHAZAR INVITACIÓN',

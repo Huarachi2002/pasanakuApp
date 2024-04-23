@@ -31,6 +31,10 @@ android {
     ndkVersion flutter.ndkVersion
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        //TODO:Firebase
+        // coreLibraryDesugaringEnabled true
+        
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -48,10 +52,12 @@ android {
         applicationId "com.yefersonhuarachi.pasanaku_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 19
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        //TODO: Firebase
+        // multiDexEnabled true
     }
 
     buildTypes {
@@ -67,4 +73,8 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //Todo: firebase
+    // coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+}

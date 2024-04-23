@@ -18,6 +18,7 @@ class NotificacionPage extends StatefulWidget {
 class _NotificacionPageState extends State<NotificacionPage> {
   bool notification = false;
   List<dynamic> data = [];
+  bool load = true;
 
   final dio = Dio(
     BaseOptions(
@@ -45,6 +46,17 @@ class _NotificacionPageState extends State<NotificacionPage> {
         }
     } 
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Timer(const Duration(seconds: 3),(){
+      setState(() {
+        load=!load;
+      });
+    });
+  }
   
   @override
   void didChangeDependencies() {
@@ -63,7 +75,6 @@ class _NotificacionPageState extends State<NotificacionPage> {
     return Scaffold(
       drawer: const Drawer(
         backgroundColor: Color(0xFF666F88),
-        
       ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
@@ -135,8 +146,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
                 ),
                 child: Column(
-                  children: [
-                    
+                  children: [  
                     const SizedBox(height: 10,),
                     const Text(
                       'NOTIFICACIONES', 
@@ -151,8 +161,15 @@ class _NotificacionPageState extends State<NotificacionPage> {
                     SizedBox(
                       height: 799,
                       child: 
-                      data.isEmpty
+                      (load)
                       ? const Center(child: CircularProgressIndicator(),)
+                      : (data.isEmpty)
+                      ? const Center(child: Text('Vacio',style: TextStyle(
+                        color: Color(0xFF318CE7),
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                        fontSize: 40
+                      ),),)
                       :
                       ListView.builder(
                         shrinkWrap: true,

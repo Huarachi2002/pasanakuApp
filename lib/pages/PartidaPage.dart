@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,7 @@ import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:provider/provider.dart';
 
 class PartidaPage extends StatefulWidget {
-    static const name = 'partida-screen';
+  static const name = 'partida-screen';
   const PartidaPage({super.key});
 
   @override
@@ -17,33 +19,8 @@ class PartidaPage extends StatefulWidget {
 
 class _PartidaPageState extends State<PartidaPage> {
   int currentStep = 0;
-  List<dynamic> data = [
-    // {
-    //   "nombre":"Erick (Yo)"
-    // },
-    // {
-    //   "nombre":"Moiso"
-    // },
-    // {
-    //   "nombre":"Quimet"
-    // },
-    // {
-    //   "nombre":"Huarachi"
-    // },
-    // {
-    //   "nombre":"Harold"
-    // },
-    // {
-    //   "nombre":"Samuel"
-    // },
-    // {
-    //   "nombre":"Dario"
-    // },
-    // {
-    //   "nombre":"Vera"
-    // },
-  ];
-
+  List<dynamic> data = [];
+  bool load = true;
 
   final dio = Dio(
     BaseOptions(
@@ -56,7 +33,9 @@ class _PartidaPageState extends State<PartidaPage> {
       final gameId = Provider.of<PartidaProvider>(context, listen: false).id;
       final response = await dio.get('/participant/gamePk/$gameId');
       data = response.data['data'];
-      print(data);
+      print('Data Participantes: $data');
+      print('Data Participantes: ${data[0]['player']['name']}');
+
     } on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
@@ -74,7 +53,12 @@ class _PartidaPageState extends State<PartidaPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    getParticipants();
+    Timer(Duration(seconds: 1), () {
+      setState(() {
+        load = !load;
+      });
+    },);
   }
 
   @override
@@ -108,7 +92,6 @@ class _PartidaPageState extends State<PartidaPage> {
                   ),
                 ],
               ),
-
         ),
         actions: [
           IconButton(
@@ -123,25 +106,47 @@ class _PartidaPageState extends State<PartidaPage> {
         color: const Color(0xFF318CE7),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: const Color(0xFFD9D9D9),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: const Color(0xFFD9D9D9),
+                      ),
+                      child: InkWell(
+                        child: const Icon(Icons.arrow_back_rounded,size: 50,),
+                        onTap: () {
+                          context.pop();
+                        },
+                      )
+                    ),
                   ),
-                  child: InkWell(
-                    child: const Icon(Icons.arrow_back_rounded,size: 50,),
-                    onTap: () {
-                      context.pop();
-                    },
-                  )
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(onPressed: 
+                    (true)
+                    ?() {
+                      context.push('/puja');
+                    } 
+                    : null
+                    , child: 
+                    (true)
+                    ? const Text('Ver Puja')
+                    : const Text('Puja no disponible')
+                    )
+                  ),
+                )
+              ],
             ),
             const SizedBox(height: 10,),
             Container(
@@ -152,8 +157,12 @@ class _PartidaPageState extends State<PartidaPage> {
               ),
               child: SizedBox(
                 height: 845,
-                child: SingleChildScrollView(
-                  child: Column(
+                child: 
+                (load)
+                ? const Center(child: CircularProgressIndicator(),)
+                :SingleChildScrollView(
+                  child: 
+                  Column(
                     children: [     
                       Text(
                         partidaInfo.title, 
@@ -237,18 +246,18 @@ class _PartidaPageState extends State<PartidaPage> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(
+                                SizedBox(
                                   width: double.infinity,
                                   height: 50,
                                   child: Card(
-                                    color: Color(0xFF318CE7),
+                                    color: const Color(0xFF318CE7),
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                        'Miguel Peinado', 
-                                        style: TextStyle(
+                                        '${data[0]['player']['name']}',
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           // fontWeight: FontWeight.bold,
                                           decoration: TextDecoration.none,
@@ -283,7 +292,7 @@ class _PartidaPageState extends State<PartidaPage> {
                                   child: ListView.builder(
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
-                                    itemCount: data.length,
+                                    itemCount: data.length-1,
                                     itemBuilder: (context, index) {
                                       return SizedBox(
                                         width: double.infinity,
@@ -295,7 +304,7 @@ class _PartidaPageState extends State<PartidaPage> {
                                             child: Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                              '${index+1}. ${data[index]['nombre']}', 
+                                              '${index+1}. ${data[index+1]['player']['name']}', 
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 // fontWeight: FontWeight.bold,
@@ -351,7 +360,7 @@ class _PartidaPageState extends State<PartidaPage> {
                                     color: Color(0xFF318CE7),
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none,
-                                    fontSize: 19
+                                    fontSize: 40
                                   ),
                                 ),)
                             :
@@ -392,7 +401,7 @@ class _PartidaPageState extends State<PartidaPage> {
                               child: ListView.builder(
                                 itemCount: 10,
                                 scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.only(left: 20),
+                                padding: const EdgeInsets.only(left: 20),
                                 itemBuilder: (context, index) {
                                   return Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,

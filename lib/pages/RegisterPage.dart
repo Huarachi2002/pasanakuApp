@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
@@ -25,14 +26,13 @@ class _RegisterPageState extends State<RegisterPage> {
   String correo_text = '';
   String password_text = '';
   String password2_text = '';
-
   final dio = Dio(
     BaseOptions(
       baseUrl: 'http://192.168.100.17:3001/api',
     ),
   );
 
-  Future<void> registerUser() async{
+  Future<void> registerUser(String token) async{
     try {
       final response = await dio.post(
         '/player',
@@ -43,6 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
           "password": password_text,
           "address": "prueba",
           "telephone": '+591$telefono_text',
+          "token_FCM" : token
         }
       );
       // print('Response register: ${response.data}');
@@ -71,6 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final token = context.watch<NotificationsBloc>().state.token;
     return SingleChildScrollView(
       child: Container(
         color: const Color(0xff6AA9E9),
@@ -283,7 +285,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () {
                         final isValid = _formKey.currentState!.validate();
                         if(!isValid) return;
-                        registerUser();
+                        registerUser(token);
                     },
                     child: const Text(
                       'Registrarme', 

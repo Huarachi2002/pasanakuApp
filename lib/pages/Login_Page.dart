@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   );
 
   Future<void> loginUser() async{
-    print('$correo_text, $password_text');
+    // print('$correo_text, $password_text');
     try {
       final response = await dio.post(
         '/auth/login',
@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         },
       );
 
-      print(response.statusCode);
+      // print(response.statusCode);
       context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id']);
       final response2 = await dio.get('/invitations/${correo_text}');
       // print('Response Invitaciones: ${response2.data['data']}');
@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                       final isValid = _formKey.currentState!.validate();
                       if(!isValid) return;
                       loginUser();
-                      print('Error: ${errorMessage}');
+                      // print('Error: ${errorMessage}');
                     }, 
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),

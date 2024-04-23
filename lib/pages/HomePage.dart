@@ -89,24 +89,23 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFF666F88),
       ),
       appBar: AppBar(
+
         backgroundColor: const Color(0xFF318CE7),
-        title: context.select((NotificationsBloc bloc) 
-          => Center(
+        title: const Center(
             child: 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${bloc.state.status}', 
-                    style: const TextStyle(
+                    'PASANAKU', 
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.none,
-                      fontSize: 10
                     ),
                   ),
-                  const SizedBox(width: 15,),
-                  const Image(
+                  SizedBox(width: 15,),
+                  Image(
                     image: AssetImage('assets/logo.png'),
                     width: 50,
                     height: 50
@@ -114,7 +113,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-        ), 
         actions: [
           IconButton(
             onPressed: (){
@@ -166,7 +164,7 @@ class _PartidaViewState extends State<_PartidaView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(const Duration(seconds: 3), (){
+    Timer(const Duration(seconds: 1), (){
       setState(() {
         load = !load;
       });
@@ -175,6 +173,8 @@ class _PartidaViewState extends State<_PartidaView> {
 
   @override
   Widget build(BuildContext context) {
+    final notifications = context.watch<NotificationsBloc>().state.notifications;
+    print(notifications);
     return Container(
       color: const Color(0xFF318CE7),
       child: SingleChildScrollView(
@@ -223,10 +223,9 @@ class _PartidaViewState extends State<_PartidaView> {
                           color: Color(0xFF318CE7),
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.none,
-                          fontSize: 19
+                          fontSize: 40
                         ),
-                      ),)
-                    
+                      ),)   
                   :const SizedBox(height: 20,),
                   SizedBox(
                     height: 707,
@@ -293,15 +292,16 @@ class _PartidaViewState extends State<_PartidaView> {
                                 ),
                                 trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.black,),
                                 onTap: (){
-                                  context.read<PartidaProvider>().changePartida(
+                                  Provider.of<PartidaProvider>(context, listen: false).changePartida(
                                     newTitle: widget.data[index]['name'], 
-                                    newId: widget.data[index]['id'],
+                                    newId: widget.data[index]['id'].toString(),
                                     newEstado: widget.data[index]['estado'], 
                                     newCuota: int.parse(widget.data[index]['cuota'].toString()), 
                                     newPlayerTotal: int.parse(widget.data[index]['number_of_players'].toString()) , 
                                     newPeriodo: widget.data[index]['period']['name']
                                   );
                                   context.push('/partida');
+                                  // context.push('/push-details/${notifications[0].messageId}');
                                 },
                               ),
                             ),
