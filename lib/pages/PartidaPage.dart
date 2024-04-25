@@ -7,6 +7,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
+import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class PartidaPage extends StatefulWidget {
@@ -21,6 +22,8 @@ class _PartidaPageState extends State<PartidaPage> {
   int currentStep = 0;
   List<dynamic> data = [];
   bool load = true;
+  bool statePuja = false;
+  PartidaProvider? partida;
 
   final dio = Dio(
     BaseOptions(
@@ -30,12 +33,37 @@ class _PartidaPageState extends State<PartidaPage> {
 
   Future<void> getParticipants() async {
     try {
-      final gameId = Provider.of<PartidaProvider>(context, listen: false).id;
-      final response = await dio.get('/participant/gamePk/$gameId');
+      final player = Provider.of<UserProvider>(context, listen: false);
+      partida = Provider.of<PartidaProvider>(context, listen: false);
+      final response = await dio.get('/participant/gamePk/${partida!.id}');
       data = response.data['data'];
-      print('Data Participantes: $data');
-      print('Data Participantes: ${data[0]['player']['name']}');
+      data.forEach((participant) {
+        print('${participant['player_id']} == ${player.id}');
+        if(participant['player_id'] == player.id) {
+          player.changeParticipantId(newId: participant['id']);
+          print(participant['id']);
+        }
+      });
+      // print('Data Participantes: $data');
+      // print('Data Participantes: ${data[0]['player']['name']}');
+    } on DioException catch (e) {
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
+  }
 
+  Future<void> getPuja()async{
+    try {
+      final response = await dio.get('/numbers/${partida!.id}');
+      print(response.data['data']);
+      if(response.data['data'].length > 0) statePuja = true;
     } on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
@@ -54,6 +82,7 @@ class _PartidaPageState extends State<PartidaPage> {
     // TODO: implement initState
     super.initState();
     getParticipants();
+    getPuja();
     Timer(Duration(seconds: 1), () {
       setState(() {
         load = !load;
@@ -134,13 +163,13 @@ class _PartidaPageState extends State<PartidaPage> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(onPressed: 
-                    (true)
+                    (statePuja)
                     ?() {
                       context.push('/puja');
                     } 
                     : null
                     , child: 
-                    (true)
+                    (statePuja)
                     ? const Text('Ver Puja')
                     : const Text('Puja no disponible')
                     )
@@ -210,7 +239,7 @@ class _PartidaPageState extends State<PartidaPage> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Participantes ${partidaInfo.cantPlayer}/${partidaInfo.playerTotal}', 
+                            'Participantes ${data.length}/${partidaInfo.playerTotal}', 
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

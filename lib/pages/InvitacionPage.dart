@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
+import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,12 +19,15 @@ class InvitacionPage extends StatefulWidget {
 
 class _InvitacionPageState extends State<InvitacionPage> {
   final List<Map<String,String>> data = [];
+  List<dynamic> dataPart = [];
 
   final dio = Dio(
     BaseOptions(
       baseUrl: 'http://192.168.100.17:3001/api',
     ),
   );
+
+
 
   Future<void> confirmInvit (BuildContext context) async {
     try {
@@ -204,7 +208,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  '${context.watch<InvitacionProvider>().users}/${context.watch<InvitacionProvider>().capacidad}', 
+                                  context.watch<InvitacionProvider>().capacidad, 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,

@@ -63,7 +63,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     getInvitaciones(context);
-    Timer(const Duration(seconds: 3), (){
+    Timer(const Duration(seconds: 1), (){
       setState(() {
       });
     });
@@ -210,11 +210,11 @@ class _NotificacionPageState extends State<NotificacionPage> {
                                 trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.black,),
                                 onTap: (){
                                   context.read<InvitacionProvider>().changeInvitacion(
-                                    newId: data[index]['id'].toString(), 
-                                    newNameAdmin: data[index]['player']['name'], 
+                                    newIdGame: data[index]['game_id'].toString(),
+                                    newId: data[index]['id'].toString(),
+                                    newNameAdmin: data[index]['player']['name'],
                                     newCapacidad: data[index]['game']['number_of_players'].toString(), 
                                     newCuota: data[index]['game']['cuota'].toString(),
-                                    newUsers: '1', 
                                     newFechaInit: data[index]['game']['start_date'].toString(), 
                                     newPeriodo: data[index]['game']['period']['name']
                                   );

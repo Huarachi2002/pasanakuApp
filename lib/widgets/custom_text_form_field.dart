@@ -37,12 +37,6 @@ class CustomTextFormField extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       obscureText: obscureText,
-        // (value) {
-        // if (value == null) return 'Campo es requerido';
-        // if (value.isEmpty) return 'Campo es requerido';
-        // if(value.trim().isEmpty) return 'Campo es requerido';
-        // return null;
-        // },
       decoration: InputDecoration(
         icon: icon,
         iconColor: Colors.black,

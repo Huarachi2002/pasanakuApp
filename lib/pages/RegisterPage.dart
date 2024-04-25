@@ -1,9 +1,13 @@
 
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
@@ -19,6 +23,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  File ? _selectedImage;
 
   String nombre_text = '';
   String telefono_text = '';
@@ -47,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       );
       // print('Response register: ${response.data}');
-      context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id']);
+      context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id'], newState: 'authenticated');
       final response2 = await dio.get('/invitations/${correo_text}');
       // print('Response Invitaciones: ${response2.data['data']}');
       
@@ -67,7 +73,14 @@ class _RegisterPageState extends State<RegisterPage> {
           print(e.message);
         }
     } 
+  }
 
+  Future<void> showImageGallery()async{
+    final returnedImage =  await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(returnedImage == null) return;
+    setState(() {
+      _selectedImage = File(returnedImage.path);
+    });
   }
 
   @override
@@ -273,6 +286,46 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '(opcional)', 
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              decoration: TextDecoration.none
+                            ),
+                          ),
+                          const SizedBox(height: 5,),
+                          ElevatedButton.icon(
+                            onPressed: (){
+                              showImageGallery();
+                            }, 
+                            icon: const Icon(Icons.upload), 
+                            label: const Text('Subir QR')
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 10,),
+                      (_selectedImage != null )
+                        ? SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: Image.file(_selectedImage!),
+                          )
+                        : Container()
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20,),
               Container(
                 padding: const EdgeInsets.all(15),
                 margin: const EdgeInsets.symmetric(horizontal: 45),
@@ -299,7 +352,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 100,),
+              const SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

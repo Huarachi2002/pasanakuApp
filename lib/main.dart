@@ -6,6 +6,7 @@ import 'package:pasanaku_app/config/router/app_router.dart';
 import 'package:pasanaku_app/config/theme/appTheme.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
+import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProvider(),),
         ChangeNotifierProvider(create: (context) => InvitacionProvider(),),
         ChangeNotifierProvider(create: (context) => PartidaProvider(),),
+        ChangeNotifierProvider(create: (context) => PreviousRouteProvider(),),
       ],
       child: MaterialApp.router(
         theme: AppTheme().getTheme(),
@@ -74,8 +76,8 @@ class _HandleNotificationInteractionsState extends State<HandleNotificationInter
   
   void _handleMessage(RemoteMessage message) {
     context.read<NotificationsBloc>().handleRemoteMessage(message);
-
     final messageId = message.messageId?.replaceAll(':', '').replaceAll('%', '');
+    context.read<PreviousRouteProvider>().changeRoute(newRoute: '/push-details/$messageId');
     appRouter.push('/push-details/$messageId');
   }
 

@@ -1,3 +1,4 @@
+
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/pages/DetailsPage.dart';
 import 'package:pasanaku_app/pages/HomePAge.dart';
@@ -7,9 +8,22 @@ import 'package:pasanaku_app/pages/NotificacionPage.dart';
 import 'package:pasanaku_app/pages/PartidaPage.dart';
 import 'package:pasanaku_app/pages/PujaPage.dart';
 import 'package:pasanaku_app/pages/RegisterPage.dart';
+import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
+import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
+  redirect: (context, state) {
+    final authenticated = Provider.of<UserProvider>(context, listen: false).state;
+    // print(authenticated);
+    // print('path: ${state.path}');
+    // print('name: ${state.name}');
+    // print('Fullpath: ${state.fullPath}');
+    if(state.fullPath == '/register') return '/register'; 
+    if(authenticated == 'no-authenticated') return '/login';
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/login',

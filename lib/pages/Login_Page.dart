@@ -1,9 +1,11 @@
-
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/providers/partida_provider.dart';
+import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +20,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  
   String correo_text = '';
   String errorMessage = '';
   String errorPassword = '';
@@ -42,15 +44,22 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // print(response.statusCode);
-      context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id']);
+      context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id'], newState: 'authenticated');
       final response2 = await dio.get('/invitations/${correo_text}');
       // print('Response Invitaciones: ${response2.data['data']}');
       
-      if(response2.data['data'].length > 0){
-        context.push('/notificacion');
+      final routePrevious = Provider.of<PreviousRouteProvider>(context, listen: false).route;
+      print('route: $routePrevious');
+      if(routePrevious != ''){ 
+        context.push(routePrevious);
       }else{
-        context.push('/home');
+        if(response2.data['data'].length > 0){
+          context.push('/notificacion');
+        }else{
+          context.push('/home');
+        }
       }
+      
 
     }on DioException catch (e) {
         if(e.response != null && e.response!.data['message'] == null){
@@ -58,12 +67,12 @@ class _LoginPageState extends State<LoginPage> {
           // print('headers: ${e.response!.headers}');
           // print('requestOptions: ${e.response!.requestOptions}');
           setState(() {
-            errorMessage = e.response!.data['errors']['details'][0]["msg"];
+            // errorMessage = e.response!.data['errors']['details'][0]["msg"];
           });
           // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
         }else{
           setState(() {
-            errorPassword = e.response!.data['message'];
+            // errorPassword = e.response!.data['message'];
           });
           // print('requestOptions: ${e.requestOptions}');
           // print(e.message);
@@ -244,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-              const SizedBox(height: 250,),
+              const SizedBox(height: 350,),
               const Text(
                 'Al continuar, declaras tu conformidad con nuestras',
                 style: TextStyle(
