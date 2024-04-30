@@ -7,11 +7,9 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
+import 'package:pasanaku_app/providers/puja_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
-// import 'package:pasanaku_app/providers/partida_provider.dart';
-import 'package:pasanaku_app/widgets/card.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
 
 class PujaPage extends StatefulWidget {
   static const name = 'puja-screen';
@@ -22,34 +20,17 @@ class PujaPage extends StatefulWidget {
 }
 
 class _PujaPageState extends State<PujaPage> {
+  // PujaProvider? pujaProvider;
+  // UserProvider? player;
+  // PartidaProvider? game;
   int montoPuja = 0;
   String idPuja = '';
   int participantId = 0;
   bool statePujar = true;
-  UserProvider? player;
-  PartidaProvider? game;
-  List<dynamic> data = [
-    // {
-    //   'ganador': 'Fernando',
-    //   'monto': '100',
-    //   'state': false
-    // },
-    // {
-    //   'ganador': '',
-    //   'monto': '',
-    //   'state': true
-    // },
-    // {
-    //   'ganador': '',
-    //   'monto': '',
-    //   'state': false
-    // },
-    // {
-    //   'ganador': '',
-    //   'monto': '',
-    //   'state': false
-    // },
-  ];
+  List<dynamic> data = [];
+  int currentValue= 0;
+
+  late Timer _timer;
   
   final dio = Dio(
     BaseOptions(
@@ -57,17 +38,20 @@ class _PujaPageState extends State<PujaPage> {
     ),
   );
 
-  Future<void> getNumbersPuja(BuildContext context) async{
+  Future<void> getNumbersPuja() async{
     try {
-      player = Provider.of<UserProvider>(context, listen: false);
-      game = Provider.of<PartidaProvider>(context,listen: false);
-      final response = await dio.get('/numbers/${game!.id}');
+      final player = Provider.of<UserProvider>(context, listen: false);
+      final game = Provider.of<PartidaProvider>(context,listen: false);
+      final response = await dio.get('/numbers/${game.id}');
       data = response.data['data'];
+      print(data);
       data.forEach((number) { 
         if(number['state']) idPuja = number['id'].toString(); 
-        if (number['player_id'] == player!.id) statePujar = false;
+        print('idPuja: $idPuja');
+        if(number['player_id'] == player.id) statePujar = false;
+        print('statePujar: $statePujar');
       });
-      
+      getPujar();
     } on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
@@ -81,28 +65,32 @@ class _PujaPageState extends State<PujaPage> {
     } 
   }
 
-  Future<void> getPujar(BuildContext context)async{
+  Future<void> getPujar()async{
     try {
-        final player = Provider.of<UserProvider>(context, listen: false);
-        print('playerIdPart: ${player.idParticipant}, idPuja: $idPuja');
-        final response = await dio.get(
-          '/offer/$idPuja',
-          data: {
-            'participant_id': player.idParticipant,
-          }
-        );
-        if(response.data['data'].length > 0) statePujar = false;
+      if(idPuja == '') return;
+      final player = Provider.of<UserProvider>(context, listen: false);
+      final response = await dio.get(
+        '/offer/$idPuja',
+        data: {
+          "participant_id": player.idParticipant
+        }
+      );
+      print(response.data['data'].length);
+      if(response.data['data'].length>0){
+        statePujar = false;
+        montoPuja = response.data['data'][0]['amount'];
+      }  
     } on DioException catch (e) {
-          if(e.response != null){
-            print('data: ${e.response!.data}');
-            print('headers: ${e.response!.headers}');
-            print('requestOptions: ${e.response!.requestOptions}');
-            // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
-          }else{
-            print('requestOptions: ${e.requestOptions}');
-            print(e.message);
-          }
-      } 
+        if(e.response != null){
+          print('data: ${e.response!.data}');
+          print('headers: ${e.response!.headers}');
+          print('requestOptions: ${e.response!.requestOptions}');
+          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+        }else{
+          print('requestOptions: ${e.requestOptions}');
+          print(e.message);
+        }
+    } 
   }
 
   Future<void> postPujar(BuildContext context)async{
@@ -116,7 +104,11 @@ class _PujaPageState extends State<PujaPage> {
             'amount': montoPuja
           }
         );
-
+        Provider.of<PujaProvider>(context,listen: false).changePuja(
+          newMont: response.data['data']['amount'], 
+          newNumberId: response.data['data']['number_id'],
+          newParticipantId: response.data['data']['participant_id']
+        );
       } on DioException catch (e) {
           if(e.response != null){
             print('data: ${e.response!.data}');
@@ -133,9 +125,8 @@ class _PujaPageState extends State<PujaPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getNumbersPuja(context);
-    getPujar(context);
-    Timer(const Duration(seconds: 1), (){
+    getNumbersPuja();
+    _timer = Timer(const Duration(seconds: 1), (){
       setState(() {
         
       });
@@ -143,8 +134,16 @@ class _PujaPageState extends State<PujaPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // final partidaInfo = Provider.of<PartidaProvider>(context, listen: false);
+    final game = Provider.of<PartidaProvider>(context, listen: false);
+    final pujaProvider = Provider.of<PujaProvider>(context, listen: false);
     return Scaffold(
       drawer: const Drawer(
         backgroundColor: Color(0xFF666F88),
@@ -268,22 +267,107 @@ class _PujaPageState extends State<PujaPage> {
                                         return SizedBox(
                                           width: double.infinity,
                                           height: 50,
-                                          child: CustomCard(
-                                            montoPujado: montoPuja,
-                                            initialValue: (game!.cuota *0.20).toInt(),
-                                            minValue: (game!.cuota *0.20).toInt(),
-                                            maxValue: game!.cuota,
-                                            state: data[index]['state'],
-                                            text: 'Ronda ${index+1}:',
-                                            ganador: data[index]['player'] != null ? data[index]['player']['name'] : '',
-                                            montoGanador: data[index]['winning_amount']!=null ? data[index]['winning_amount'].toString() : '',
-                                            pujar: statePujar,
-                                            changedPujar: (value) {
-                                              montoPuja = value;
-                                              print('montoPuja: $montoPuja');
-                                              statePujar = false;
-                                              postPujar(context);
-                                            },
+                                          child: Card(
+                                            elevation: 4,
+                                            color: (idPuja == data[index]['id'].toString()) ? const Color(0xFF318CE7) : const Color(0xFFA3A8B7),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                  'Ronda ${index+1}: ',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    decoration: TextDecoration.none,
+                                                    fontSize: 20
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10,),
+                                                  statePujar && montoPuja == 0
+                                                  ?
+                                                    idPuja == data[index]['id'].toString()
+                                                    ?
+                                                      Row(
+                                                        children: [
+                                                          const SizedBox(width: 50,),
+                                                          CupertinoButton.filled(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            child: Text('$currentValue Bs'), 
+                                                            onPressed: () => showCupertinoModalPopup(
+                                                              context: context,
+                                                              builder: (_) => SizedBox(
+                                                                width: double.infinity,
+                                                                height: 250,
+                                                                child: CupertinoPicker(
+                                                                  backgroundColor: Colors.white,
+                                                                  itemExtent: 30,
+                                                                  scrollController: FixedExtentScrollController(
+                                                                    initialItem: currentValue
+                                                                  ),
+                                                                  onSelectedItemChanged: (int value) {
+                                                                    setState(() {
+                                                                      currentValue=value + (game.cuota*0.20).toInt() ;
+                                                                    });
+                                                                  },
+                                                                  children: 
+                                                                    List<Widget>.generate(game.cuota - (game.cuota*0.20).toInt(), (int index) {
+                                                                      return Center(child: Text('${index+(game.cuota*0.20).toInt()}'));
+                                                                    }
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            )
+                                                          ),
+                                                          const SizedBox(width: 45,),
+                                                          ElevatedButton.icon(
+                                                            onPressed: (){
+                                                              setState(() {
+                                                                pujaProvider.changePuja(newMont: montoPuja);
+                                                                statePujar = false;
+                                                                montoPuja = currentValue;
+                                                                postPujar(context);
+                                                                print(montoPuja);
+                                                              });
+                                                            }, 
+                                                            icon: const Icon(Icons.monetization_on_rounded), 
+                                                            label: const Text('Pujar')
+                                                          )
+                                                        ],
+                                                      )
+                                                    :
+                                                      Text(
+                                                        data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)?'${data[index]['player']['name'].substring(0,15)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['ganador']} (${data[index]['winning_amount']} Bs)',
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          // fontWeight: FontWeight.bold,
+                                                          decoration: TextDecoration.none,
+                                                          fontSize: 20
+                                                        ),
+                                                      )
+                                                  :
+                                                    (montoPuja > 0  && data[index]['player'] == null && data[index]['id'].toString() == idPuja)
+                                                    ?
+                                                    Text(
+                                                        'Pujaste con $montoPuja Bs',
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          decoration: TextDecoration.none,
+                                                          fontSize: 20
+                                                        ),
+                                                      )
+                                                    :
+                                                    Text(
+                                                        data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)?'${data[index]['player']['name'].substring(0,15)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['player']['name']} (${data[index]['winning_amount']} Bs)',
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          decoration: TextDecoration.none,
+                                                          fontSize: 20
+                                                        ),
+                                                      )
+                                                ]   
+                                              ),
+                                            ),
                                           )
                                         );
                                       },

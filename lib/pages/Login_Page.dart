@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
@@ -32,8 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     ),
   );
 
-  Future<void> loginUser() async{
-    // print('$correo_text, $password_text');
+  Future<void> loginUser(String token) async{
     try {
       final response = await dio.post(
         '/auth/login',
@@ -42,18 +40,22 @@ class _LoginPageState extends State<LoginPage> {
           'password': password_text,
         },
       );
-
-      // print(response.statusCode);
+      await dio.put(
+        '/player/${response.data['data']['id']}/token',
+        data: {
+          'token_FCM': token
+        }
+      );
+      print(response.statusCode);
       context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id'], newState: 'authenticated');
-      final response2 = await dio.get('/invitations/${correo_text}');
-      // print('Response Invitaciones: ${response2.data['data']}');
-      
+
+      final response3 = await dio.get('/invitations/$correo_text');      
       final routePrevious = Provider.of<PreviousRouteProvider>(context, listen: false).route;
       print('route: $routePrevious');
       if(routePrevious != ''){ 
         context.push(routePrevious);
       }else{
-        if(response2.data['data'].length > 0){
+        if(response3.data['data'].length > 0){
           context.push('/notificacion');
         }else{
           context.push('/home');
@@ -62,27 +64,32 @@ class _LoginPageState extends State<LoginPage> {
       
 
     }on DioException catch (e) {
-        if(e.response != null && e.response!.data['message'] == null){
+        if(e.response != null){
           // print('data: ${e.response!.data}');
           // print('headers: ${e.response!.headers}');
           // print('requestOptions: ${e.response!.requestOptions}');
           setState(() {
-            // errorMessage = e.response!.data['errors']['details'][0]["msg"];
+            if(e.response!.data['meta']['message'] == 'Bad request'){
+              errorMessage = e.response!.data['errors']['details'][0]["msg"];
+            }else{
+              errorPassword = 'Contraseña incorrecta';
+            }
           });
           // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
-        }else{
-          setState(() {
-            // errorPassword = e.response!.data['message'];
-          });
-          // print('requestOptions: ${e.requestOptions}');
-          // print(e.message);
         }
     } 
     
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final token = context.watch<NotificationsBloc>().state.token;
     return SingleChildScrollView(
       child: Container(
         color: const Color(0xff6AA9E9),
@@ -223,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       final isValid = _formKey.currentState!.validate();
                       if(!isValid) return;
-                      loginUser();
+                      loginUser(token);
                       // print('Error: ${errorMessage}');
                     }, 
                     style: const ButtonStyle(

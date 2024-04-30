@@ -19,6 +19,8 @@ class _NotificacionPageState extends State<NotificacionPage> {
   bool notification = false;
   List<dynamic> data = [];
   bool load = true;
+  late Timer _timer;
+
 
   final dio = Dio(
     BaseOptions(
@@ -47,16 +49,24 @@ class _NotificacionPageState extends State<NotificacionPage> {
     } 
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Timer(const Duration(seconds: 3),(){
+
+@override
+void initState() {
+  super.initState();
+  _timer = Timer(const Duration(seconds: 3), () {
+    if (mounted) {  // Verifica si el widget está montado
       setState(() {
-        load=!load;
+        load = !load;
       });
-    });
-  }
+    }
+  });
+}
+
+@override
+void dispose() {
+  _timer.cancel();  // Cancela el Timer para evitar errores
+  super.dispose();
+}
   
   @override
   void didChangeDependencies() {
@@ -133,6 +143,10 @@ class _NotificacionPageState extends State<NotificacionPage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
+                        if(context.canPop()) {
+                          context.pop();
+                          return;
+                        }
                         context.push('/home');
                       },
                     )

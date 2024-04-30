@@ -32,6 +32,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String correo_text = '';
   String password_text = '';
   String password2_text = '';
+
+  String erroEmail = '';
+
   final dio = Dio(
     BaseOptions(
       baseUrl: 'http://192.168.100.17:3001/api',
@@ -65,6 +68,9 @@ class _RegisterPageState extends State<RegisterPage> {
     }on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
+          setState(() {
+            erroEmail = e.response!.data['errors']['details'][0]['msg'];
+          });
           print('headers: ${e.response!.headers}');
           print('requestOptions: ${e.response!.requestOptions}');
           // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
@@ -182,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       icon: const Icon(Icons.email_outlined, size: 25,),
                       label: 'Correo Electronico',
                       hint: 'example@gmail.com',
-                      // errorMessage: 'Correo invalido',
+                      errorMessage: erroEmail == '' ? null: 'Correo ya se encuentra registrado',
                       onChanged: (value) {
                         // _formKey.currentState?.validate();
                         correo_text = value;

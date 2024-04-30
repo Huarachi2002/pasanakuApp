@@ -1,82 +1,9 @@
-import 'package:dio/dio.dart';
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/painting.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pasanaku_app/providers/invitacion_provider.dart';
-import 'package:pasanaku_app/providers/partida_provider.dart';
-import 'package:pasanaku_app/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 
-class InvitacionPage extends StatefulWidget {
-  static const name = 'invitacion-screen';
-  const InvitacionPage({super.key});
-
-  @override
-  State<InvitacionPage> createState() => _InvitacionPageState();
-}
-
-class _InvitacionPageState extends State<InvitacionPage> {
-  final List<Map<String,String>> data = [];
-  List<dynamic> dataPart = [];
-
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: 'http://192.168.100.17:3001/api',
-    ),
-  );
-
-
-
-  Future<void> confirmInvit (BuildContext context) async {
-    try {
-      final player_id = Provider.of<UserProvider>(context,listen: false).id;
-      final invitacion_id = Provider.of<InvitacionProvider>(context,listen: false).id;
-
-      await dio.post(
-        '/invitations/confirm',
-        data: {
-          "player_id": player_id,
-          "invitation_id" : invitacion_id
-        }
-      );
-      print('Invitacion Confirmada');
-    } on DioException catch (e) {
-        if(e.response != null){
-          print('data: ${e.response!.data}');
-          print('headers: ${e.response!.headers}');
-          print('requestOptions: ${e.response!.requestOptions}');
-          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
-        }else{
-          print('requestOptions: ${e.requestOptions}');
-          print(e.message);
-        }
-    } 
-  }
-
-  Future<void> denegInvit (BuildContext context) async {
-    try {
-      final invitacion_id = Provider.of<InvitacionProvider>(context,listen: false).id;
-      final response = await dio.delete(
-        '/invitations/refuse',
-        data: {
-          "invitation_id" : invitacion_id
-        }
-      );
-      print('Invitacion Rechazada');
-    } on DioException catch (e) {
-        if(e.response != null){
-          print('data: ${e.response!.data}');
-          print('headers: ${e.response!.headers}');
-          print('requestOptions: ${e.response!.requestOptions}');
-          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
-        }else{
-          print('requestOptions: ${e.requestOptions}');
-          print(e.message);
-        }
-    } 
-  }
+class QRDetallesPage extends StatelessWidget {
+  static const name = 'partida-screen';
+  const QRDetallesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +84,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                   child: Column(
                     children: [     
                       const Text(
-                        'INVITACION', 
+                        'QR Detalle', 
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -166,7 +93,6 @@ class _InvitacionPageState extends State<InvitacionPage> {
                         ),
                       ),
                       const SizedBox(height: 5,),
-                      
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: Container(
@@ -175,13 +101,13 @@ class _InvitacionPageState extends State<InvitacionPage> {
                             borderRadius: BorderRadius.circular(30),
                             color: const Color(0xFF318CE7)
                           ),
-                          child:  Padding(
-                            padding: const EdgeInsets.all(20),
+                          child:  const Padding(
+                            padding: EdgeInsets.all(20),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Adminitrador', 
+                                Text(
+                                  'Fecha maximo de pago', 
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -190,16 +116,16 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  context.watch<InvitacionProvider>().nameAdmin, 
-                                  style: const TextStyle(
+                                  '', 
+                                  style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Capacidad', 
+                                SizedBox(height: 50,),
+                                Text(
+                                  'Monto de cuota', 
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -208,16 +134,16 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  context.watch<InvitacionProvider>().capacidad, 
-                                  style: const TextStyle(
+                                  '', 
+                                  style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Cuota', 
+                                SizedBox(height: 50,),
+                                Text(
+                                  'Penalizacion', 
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -226,16 +152,16 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  context.watch<InvitacionProvider>().cuota, 
-                                  style: const TextStyle(
+                                  '', 
+                                  style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Fecha de Inicio', 
+                                SizedBox(height: 50,),
+                                Text(
+                                  'Monto Total', 
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -244,26 +170,8 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  context.watch<InvitacionProvider>().fechaInit, 
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Periodo', 
+                                  '', 
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<InvitacionProvider>().periodo, 
-                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
@@ -274,45 +182,22 @@ class _InvitacionPageState extends State<InvitacionPage> {
                           ),
                         )
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              confirmInvit(context);
-                              context.push('/home');
-                            }, 
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),
-                            ),
-                            child: const Text(
-                              'ACEPTAR INVITACIÓN',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
-                              ),
-                            )
-                          ),
-                          // const SizedBox(width: 0,),
-                          ElevatedButton(
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
-                            ),
-                            onPressed:(){
-                              denegInvit(context);
-                              context.pop();
-                            }, 
-                            child: const Text(
-                              'RECHAZAR INVITACIÓN',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
-                              ),
-                            )
-                          )
-                         
-                        ],
-                      )
+                      Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                    },
+                    icon: const Icon(Icons.download),
+                    label: const Text(
+                      'DESCARGAR QR', 
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                        fontSize: 20
+                      ),
+                    ),
+                  ),
+                ),
                     ],
                   ),
                 ),

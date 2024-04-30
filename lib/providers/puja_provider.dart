@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
 class PujaProvider with ChangeNotifier{
-  int? monto;
+  int? numberid;
+  int? monto = 0;
+  int? participantId;
 
   PujaProvider({
-    this.monto
+    this.monto = 0
   });
 
-  void changeRoute({
-    required int newMont,
+  void changePuja({
+    int? newMont,
+    int? newNumberId,
+    int? newParticipantId,
   }) async {
-    monto = newMont;
-
+    monto = newMont ?? monto;
+    numberid = newNumberId ?? numberid;
+    participantId = newParticipantId ?? participantId;
     notifyListeners();
   }
 }

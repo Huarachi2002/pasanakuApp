@@ -25,6 +25,8 @@ class _PartidaPageState extends State<PartidaPage> {
   bool statePuja = false;
   PartidaProvider? partida;
 
+  late Timer _timer;
+
   final dio = Dio(
     BaseOptions(
       baseUrl: 'http://192.168.100.17:3001/api',
@@ -83,11 +85,18 @@ class _PartidaPageState extends State<PartidaPage> {
     super.initState();
     getParticipants();
     getPuja();
-    Timer(Duration(seconds: 1), () {
+    _timer = Timer(Duration(seconds: 1), () {
       setState(() {
         load = !load;
       });
     },);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer.cancel();
   }
 
   @override

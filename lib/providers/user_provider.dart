@@ -22,6 +22,13 @@ class UserProvider with ChangeNotifier{
     state = newState ?? 'no-authenticated';
     notifyListeners();
   }
+
+  void deletedUser() async {
+    userEmail = '';
+    id = '';
+    state = 'no-authenticated';
+    notifyListeners();
+  }
   
   void changeParticipantId({
     required int newId,
@@ -29,4 +36,5 @@ class UserProvider with ChangeNotifier{
     idParticipant = newId;
     notifyListeners();
   }
+
 }

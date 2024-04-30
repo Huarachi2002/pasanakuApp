@@ -16,10 +16,6 @@ final appRouter = GoRouter(
   initialLocation: '/login',
   redirect: (context, state) {
     final authenticated = Provider.of<UserProvider>(context, listen: false).state;
-    // print(authenticated);
-    // print('path: ${state.path}');
-    // print('name: ${state.name}');
-    // print('Fullpath: ${state.fullPath}');
     if(state.fullPath == '/register') return '/register'; 
     if(authenticated == 'no-authenticated') return '/login';
     return null;
