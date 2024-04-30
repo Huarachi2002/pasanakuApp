@@ -157,7 +157,8 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 notification = !notification;
               });
-              context.push('/notificacion');
+              // context.push('/notificacion');
+              context.push('/qr-details/343');
             }, 
             icon: (notification) 
               ?const Icon(Icons.notifications_active_rounded,color: Colors.amber,size: 30,) 

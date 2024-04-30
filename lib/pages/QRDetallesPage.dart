@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/domain/entities/push_message.dart';
+import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
+import 'package:provider/provider.dart';
 
-class QRDetallesPage extends StatelessWidget {
-  static const name = 'partida-screen';
-  const QRDetallesPage({super.key});
+class QRDetallesPage extends StatefulWidget {
+  static const name = 'qr-screen';
+  final String pushMessageId;
+  const QRDetallesPage({super.key, required this.pushMessageId});
 
   @override
+  State<QRDetallesPage> createState() => _QRDetallesPageState();
+}
+
+class _QRDetallesPageState extends State<QRDetallesPage> {
+  double? _progress;
+  @override
   Widget build(BuildContext context) {
+    final PushMessage? message = context.watch<NotificationsBloc>().getMessageById(widget.pushMessageId);
     return Scaffold(
       drawer: const Drawer(
         backgroundColor: Color(0xFF666F88),
-        
+
       ),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
         title: const Center(
-          child: 
+          child:
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'PASANAKU', 
+                    'PASANAKU',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -41,7 +53,7 @@ class QRDetallesPage extends StatelessWidget {
           IconButton(
             onPressed: (){
               context.push('/notificacion');
-            }, 
+            },
             icon: const Icon(Icons.notifications, color: Colors.black,size: 30,)
           )
         ],
@@ -82,9 +94,9 @@ class QRDetallesPage extends StatelessWidget {
                 width: double.infinity,
                 child: SizedBox(
                   child: Column(
-                    children: [     
+                    children: [
                       const Text(
-                        'QR Detalle', 
+                        'QR Detalle',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -101,13 +113,20 @@ class QRDetallesPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                             color: const Color(0xFF318CE7)
                           ),
-                          child:  const Padding(
-                            padding: EdgeInsets.all(20),
+                          child:  Padding(
+                            padding: const EdgeInsets.all(20),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Fecha maximo de pago', 
+                                Center(
+                                  child: SizedBox(
+                                    child: Image.network('https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcSh-wrQu254qFaRcoYktJ5QmUhmuUedlbeMaQeaozAVD4lh4ICsGdBNubZ8UlMvWjKC'),
+                                    width: 200,  
+                                    height: 200,
+                                  ),
+                                ),
+                                const Text(
+                                  'Fecha maximo de pago',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -116,16 +135,17 @@ class QRDetallesPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '', 
-                                  style: TextStyle(
+                                  // message!.data!['data'],
+                                  '',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
-                                SizedBox(height: 50,),
-                                Text(
-                                  'Monto de cuota', 
+                                const SizedBox(height: 50,),
+                                const Text(
+                                  'Monto de cuota',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -134,16 +154,17 @@ class QRDetallesPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '', 
-                                  style: TextStyle(
+                                  // message.data!['cuota'],
+                                  '',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
-                                SizedBox(height: 50,),
-                                Text(
-                                  'Penalizacion', 
+                                const SizedBox(height: 50,),
+                                const Text(
+                                  'Penalizacion',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -152,16 +173,17 @@ class QRDetallesPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '', 
-                                  style: TextStyle(
+                                  // message.data!['penalty_fee'],
+                                  '',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
-                                SizedBox(height: 50,),
-                                Text(
-                                  'Monto Total', 
+                                const SizedBox(height: 50,),
+                                const Text(
+                                  'Monto Total',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -170,8 +192,9 @@ class QRDetallesPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '', 
-                                  style: TextStyle(
+                                  // message.data!['total_amount'],
+                                  '',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
                                     decoration: TextDecoration.none
@@ -183,12 +206,32 @@ class QRDetallesPage extends StatelessWidget {
                         )
                       ),
                       Center(
-                  child: TextButton.icon(
+                  child:
+                  (_progress != null)
+                  ? const CircularProgressIndicator()
+                  :
+                  TextButton.icon(
                     onPressed: () {
+                      FileDownloader.downloadFile(
+                        // url: message.imageUrl!.trim(),
+                        url: 'https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcSh-wrQu254qFaRcoYktJ5QmUhmuUedlbeMaQeaozAVD4lh4ICsGdBNubZ8UlMvWjKC',
+                        onProgress: (fileName, progress) {
+                          setState(() {
+                            _progress = progress;
+                          });
+                        },
+                        onDownloadCompleted: (path) {
+                          print('path $path');
+                          setState(() {
+                            _progress = null;
+                          });
+                        },
+                      );
+
                     },
                     icon: const Icon(Icons.download),
                     label: const Text(
-                      'DESCARGAR QR', 
+                      'DESCARGAR QR',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

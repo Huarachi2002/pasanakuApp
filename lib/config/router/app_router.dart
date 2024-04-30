@@ -1,14 +1,13 @@
 
 import 'package:go_router/go_router.dart';
-import 'package:pasanaku_app/pages/DetailsPage.dart';
 import 'package:pasanaku_app/pages/HomePAge.dart';
 import 'package:pasanaku_app/pages/InvitacionPage.dart';
 import 'package:pasanaku_app/pages/Login_Page.dart';
 import 'package:pasanaku_app/pages/NotificacionPage.dart';
 import 'package:pasanaku_app/pages/PartidaPage.dart';
 import 'package:pasanaku_app/pages/PujaPage.dart';
+import 'package:pasanaku_app/pages/QRDetallesPage.dart';
 import 'package:pasanaku_app/pages/RegisterPage.dart';
-import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +33,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/home',
       name: HomePage.name,
-      builder: (context, state) => HomePage(),
+      builder: (context, state) => const HomePage(),
     ),
     GoRoute(
       path: '/notificacion',
@@ -57,10 +56,9 @@ final appRouter = GoRouter(
       builder: (context, state) => const PujaPage(),
     ),
     GoRoute(
-      path: '/push-details/:messageId',
-      // name: InvitacionPage.name,
-      builder: (context, state) => DetailsPage(pushMessageId: state.pathParameters['messageId']??'',),
+      path: '/qr-details/:messageId',
+      name: QRDetallesPage.name,
+      builder: (context, state) => QRDetallesPage(pushMessageId: state.pathParameters['messageId']??'',),
     ),
-    
   ]
 );

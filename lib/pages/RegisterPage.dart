@@ -32,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String correo_text = '';
   String password_text = '';
   String password2_text = '';
+  String qrPath = '';
 
   String erroEmail = '';
 
@@ -43,6 +44,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> registerUser(String token) async{
     try {
+
+      String filename =  _selectedImage!.path.split('/').last;
+      print(filename);
       final response = await dio.post(
         '/player',
         data: {
@@ -52,7 +56,8 @@ class _RegisterPageState extends State<RegisterPage> {
           "password": password_text,
           "address": "prueba",
           "telephone": '+591$telefono_text',
-          "token_FCM" : token
+          "token_FCM" : token,
+          "path_qr" : filename
         }
       );
       // print('Response register: ${response.data}');
@@ -87,6 +92,8 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _selectedImage = File(returnedImage.path);
     });
+    print(_selectedImage);
+    print(returnedImage.path);
   }
 
   @override
