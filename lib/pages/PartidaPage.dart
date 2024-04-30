@@ -25,11 +25,18 @@ class _PartidaPageState extends State<PartidaPage> {
   bool statePuja = false;
   PartidaProvider? partida;
 
+  Map<String, MaterialColor> color = {
+    "Inciados": Colors.green,
+    "En espera": Colors.yellow,
+    "Finalizados": Colors.red
+  };
+
   late Timer _timer;
 
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.100.17:3001/api',
+      // baseUrl: 'http://192.168.100.17:3001/api',
+      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'
     ),
   );
 
@@ -77,6 +84,15 @@ class _PartidaPageState extends State<PartidaPage> {
           print(e.message);
         }
     } 
+  }
+  void reload (){
+    getParticipants();
+    getPuja();
+    _timer = Timer(const Duration(seconds: 2), (){
+      setState(() {
+        load = !load;
+      });
+    });
   }
 
   @override
@@ -171,16 +187,32 @@ class _PartidaPageState extends State<PartidaPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: ElevatedButton(onPressed: 
-                    (statePuja)
-                    ?() {
-                      context.push('/puja');
-                    } 
-                    : null
-                    , child: 
-                    (statePuja)
-                    ? const Text('Ver Puja')
-                    : const Text('Puja no disponible')
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: (){
+                            setState(() {
+                              load = true;
+                            });
+                            reload();
+                          },
+                          style: ButtonStyle(
+                            iconSize: MaterialStateProperty.all<double?>(30)
+                          ),
+                          icon: const Icon(Icons.replay_outlined)
+                        ),
+                        ElevatedButton(onPressed: 
+                        (statePuja)
+                        ?() {
+                          context.push('/puja');
+                        } 
+                        : null
+                        , child: 
+                        (statePuja)
+                        ? const Text('Ver Puja')
+                        : const Text('Puja no disponible')
+                        ),
+                      ],
                     )
                   ),
                 )
@@ -229,7 +261,7 @@ class _PartidaPageState extends State<PartidaPage> {
                             width: 20,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: const Color(0xFFFAFF00)
+                              color: color[partidaInfo.estado]
                             ),
                           ),
                           const SizedBox(width: 50,),

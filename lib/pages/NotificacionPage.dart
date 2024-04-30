@@ -24,13 +24,14 @@ class _NotificacionPageState extends State<NotificacionPage> {
 
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.100.17:3001/api',
+      // baseUrl: 'http://192.168.100.17:3001/api',
+      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'
     ),
   );
   
   Future<void> getInvitaciones(BuildContext context)async{
     try {
-      final email = context.watch<UserProvider>().userEmail;
+      final email = Provider.of<UserProvider>(context,listen: false).userEmail;
       final response = await dio.get('/invitations/$email');
       // print('Response Invitacion: ${response.data['data']}');
       data = response.data['data'];
@@ -48,25 +49,36 @@ class _NotificacionPageState extends State<NotificacionPage> {
         }
     } 
   }
-
-
-@override
-void initState() {
-  super.initState();
-  _timer = Timer(const Duration(seconds: 3), () {
-    if (mounted) {  // Verifica si el widget está montado
+    void reload (){
+    getInvitaciones(context);
+    _timer = Timer(const Duration(seconds: 2), (){
       setState(() {
         load = !load;
       });
-    }
-  });
+      setState(() {
+        
+      });
+    });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {  // Verifica si el widget está montado
+        setState(() {
+          load = !load;
+        });
+      }
+    });
 }
 
-@override
-void dispose() {
-  _timer.cancel();  // Cancela el Timer para evitar errores
-  super.dispose();
-}
+  @override
+  void dispose() {
+    _timer.cancel();  // Cancela el Timer para evitar errores
+    super.dispose();
+  }
   
   @override
   void didChangeDependencies() {
@@ -178,12 +190,34 @@ void dispose() {
                       (load)
                       ? const Center(child: CircularProgressIndicator(),)
                       : (data.isEmpty)
-                      ? const Center(child: Text('Vacio',style: TextStyle(
-                        color: Color(0xFF318CE7),
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.none,
-                        fontSize: 40
-                      ),),)
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Vacio',
+                                style: TextStyle(
+                                color: Color(0xFF318CE7),
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                                fontSize: 40
+                                ),
+                            ),
+                            IconButton(
+                              onPressed: (){
+                                setState(() {
+                                  load = true;
+                                });
+                                reload();
+                              },
+                              style: ButtonStyle(
+                                iconSize: MaterialStateProperty.all<double?>(40)
+                              ),
+                              icon: const Icon(Icons.replay_outlined)
+                            )
+                          ],
+                        ),
+                        )
                       :
                       ListView.builder(
                         shrinkWrap: true,

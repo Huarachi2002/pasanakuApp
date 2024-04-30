@@ -28,7 +28,8 @@ class _HomePageState extends State<HomePage> {
   final filtro = ['Iniciado','En espera','Finalizado'];
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.100.17:3001/api',
+      // baseUrl: 'http://192.168.100.17:3001/api',
+      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'
     ),
   );
 
@@ -86,7 +87,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getPartidas();
     getNotification();
+    reload();
     
+  }
+
+  void reload (){
+    getPartidas();
+    getNotification();
     _timer = Timer(const Duration(seconds: 2), (){
       setState(() {
         load = !load;
@@ -157,8 +164,8 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 notification = !notification;
               });
-              // context.push('/notificacion');
-              context.push('/qr-details/343');
+              context.push('/notificacion');
+              // context.push('/qr-details/343');
             }, 
             icon: (notification) 
               ?const Icon(Icons.notifications_active_rounded,color: Colors.amber,size: 30,) 
@@ -219,16 +226,33 @@ class _HomePageState extends State<HomePage> {
                     )
                     :
                     (dataFiltrada.isEmpty)
-                    ? const Center(
-                        child: Text(
-                          'Vacio', 
-                          style: TextStyle(
-                            color: Color(0xFF318CE7),
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontSize: 40
+                    ? Column(
+                      children: [
+                        const Center(
+                            child: Text(
+                              'Vacio', 
+                              style: TextStyle(
+                                color: Color(0xFF318CE7),
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                                fontSize: 40
+                              ),
+                            ),
+                        ),
+                        IconButton(
+                          onPressed: (){
+                            setState(() {
+                              load = true;
+                            });
+                            reload();
+                          },
+                          style: ButtonStyle(
+                            iconSize: MaterialStateProperty.all<double?>(40)
                           ),
-                        ),)   
+                          icon: const Icon(Icons.replay_outlined)
+                        )
+                      ],
+                    )   
                     :const SizedBox(height: 20,),
                     SizedBox(
                       height: 707,
@@ -410,16 +434,26 @@ class _PartidaViewState extends State<_PartidaView> {
                   )
                   :
                   (widget.data.isEmpty)
-                  ? const Center(
-                      child: Text(
-                        'Vacio', 
-                        style: TextStyle(
-                          color: Color(0xFF318CE7),
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none,
-                          fontSize: 40
-                        ),
-                      ),)   
+                  ? Column(
+                    children: [
+                      const Center(
+                          child: Text(
+                            'Vacio', 
+                            style: TextStyle(
+                              color: Color(0xFF318CE7),
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none,
+                              fontSize: 40
+                            ),
+                          ),
+                      ),
+                      const SizedBox(height: 20,),
+                      IconButton(
+                        onPressed: (){},
+                        icon: const Icon(Icons.replay_outlined)
+                      )
+                    ],
+                  )   
                   :const SizedBox(height: 20,),
                   SizedBox(
                     height: 707,
