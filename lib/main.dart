@@ -78,8 +78,9 @@ class _HandleNotificationInteractionsState extends State<HandleNotificationInter
   
   void _handleMessage(RemoteMessage message) {
     context.read<NotificationsBloc>().handleRemoteMessage(message);
+    final messageData = context.watch<NotificationsBloc>().state.notifications;
     final messageId = message.messageId?.replaceAll(':', '').replaceAll('%', '');
-    context.read<PreviousRouteProvider>().changeRoute(newRoute: '/push-details/$messageId');
+    context.read<PreviousRouteProvider>().changeRoute(newRoute: '/${messageData[messageData.length].data!['path']}/$messageId');
     appRouter.push('/push-details/$messageId');
   }
 

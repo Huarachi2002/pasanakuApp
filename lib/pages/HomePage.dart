@@ -146,13 +146,14 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.none,
+                      fontSize: 20
                     ),
                   ),
                   SizedBox(width: 15,),
                   Image(
                     image: AssetImage('assets/logo.png'),
-                    width: 50,
-                    height: 50
+                    width: 30,
+                    height: 30
                   ),
                 ],
               ),
@@ -161,9 +162,6 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: (){
-              setState(() {
-                notification = !notification;
-              });
               context.push('/notificacion');
               // context.push('/qr-details/343');
             }, 

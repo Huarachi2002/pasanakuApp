@@ -46,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> registerUser(String token) async{
     try {
 
-      String filename =  _selectedImage!.path.split('/').last;
+      String filename =  _selectedImage?.path.split('/').last?? '';
       print(filename);
       final response = await dio.post(
         '/player',
@@ -129,7 +129,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
+                      decoration: TextDecoration.none,
+                      fontSize: 25
                     ),
                   )
                 ],

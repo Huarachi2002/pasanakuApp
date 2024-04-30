@@ -97,7 +97,8 @@ class _InvitacionPageState extends State<InvitacionPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
+                      decoration: TextDecoration.none,
+                      fontSize: 25
                     ),
                   ),
                   SizedBox(width: 15,),

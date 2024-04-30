@@ -36,7 +36,8 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
+                      decoration: TextDecoration.none,
+                      fontSize: 25
                     ),
                   ),
                   SizedBox(width: 15,),
@@ -49,14 +50,6 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
               ),
 
         ),
-        actions: [
-          IconButton(
-            onPressed: (){
-              context.push('/notificacion');
-            },
-            icon: const Icon(Icons.notifications, color: Colors.black,size: 30,)
-          )
-        ],
       ),
       body: Container(
         color: const Color(0xFF318CE7),

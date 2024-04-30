@@ -135,7 +135,8 @@ class _PartidaPageState extends State<PartidaPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
+                      decoration: TextDecoration.none,
+                      fontSize: 25
                     ),
                   ),
                   SizedBox(width: 15,),

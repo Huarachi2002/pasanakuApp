@@ -110,7 +110,8 @@ class _NotificacionPageState extends State<NotificacionPage> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none
+                      decoration: TextDecoration.none,
+                      fontSize: 25
                     ),
                   ),
                   SizedBox(width: 15,),
