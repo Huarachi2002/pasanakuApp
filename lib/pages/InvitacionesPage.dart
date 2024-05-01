@@ -7,15 +7,15 @@ import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class NotificacionPage extends StatefulWidget {
-  static const name = 'notificacion-screen';
-  const NotificacionPage({super.key});
+class InvitacionesPage extends StatefulWidget {
+  static const name = 'invitaciones-screen';
+  const InvitacionesPage({super.key});
 
   @override
-  State<NotificacionPage> createState() => _NotificacionPageState();
+  State<InvitacionesPage> createState() => _InvitacionesPageState();
 }
 
-class _NotificacionPageState extends State<NotificacionPage> {
+class _InvitacionesPageState extends State<InvitacionesPage> {
   bool notification = false;
   List<dynamic> data = [];
   bool load = true;
@@ -29,12 +29,12 @@ class _NotificacionPageState extends State<NotificacionPage> {
 
   Future<void> getInvitaciones(BuildContext context) async {
     try {
-      final player = Provider.of<UserProvider>(context, listen: false);
-      final response = await dio.get('/notification/${player.id}');
+      final email = Provider.of<UserProvider>(context, listen: false).userEmail;
+      final response = await dio.get('/invitations/$email');
       // print('Response Invitacion: ${response.data['data']}');
       data = response.data['data'];
       // print(data[0]['game']);
-      print('Response Data: $data');
+      // print('Response Data: $data');
     } on DioException catch (e) {
       if (e.response != null) {
         print('data: ${e.response!.data}');
@@ -183,7 +183,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
                         height: 10,
                       ),
                       const Text(
-                        'NOTIFICACIONES',
+                        'INVITACIONES',
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -238,7 +238,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
                                         child: Material(
                                           child: ListTile(
                                             title: Text(
-                                              '${data[index]["title"]}',
+                                              '${data[index]["game"]['name']}',
                                               style: const TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
@@ -255,14 +255,22 @@ class _NotificacionPageState extends State<NotificacionPage> {
                                                   color:
                                                       const Color(0xFFD9D9D9),
                                                 ),
-                                                child: const Icon(
-                                                  Icons.monetization_on_rounded,
-                                                  size: 40,
-                                                  color: Colors.black,
-                                                )),
+                                                child:
+                                                    (true) //data[index]['game'] == 'INVITACIÓN'
+                                                        ? const Icon(
+                                                            Icons.contact_mail,
+                                                            size: 40,
+                                                            color: Colors.black,
+                                                          )
+                                                        : const Icon(
+                                                            Icons
+                                                                .monetization_on_rounded,
+                                                            size: 40,
+                                                            color: Colors.black,
+                                                          )),
                                             tileColor: const Color(0xFF318CE7),
                                             subtitle: Text(
-                                              '${data[index]['body']}',
+                                              'Te han invitado a que te unas a la partida de ${data[index]['player']['name']}',
                                               style: const TextStyle(
                                                   color: Colors.white),
                                             ),
@@ -270,7 +278,30 @@ class _NotificacionPageState extends State<NotificacionPage> {
                                               Icons.arrow_forward_ios_rounded,
                                               color: Colors.black,
                                             ),
-                                            onTap: () {},
+                                            onTap: () {
+                                              context.read<InvitacionProvider>().changeInvitacion(
+                                                  newIdGame: data[index]
+                                                          ['game_id']
+                                                      .toString(),
+                                                  newId: data[index]['id']
+                                                      .toString(),
+                                                  newNameAdmin: data[index]
+                                                      ['player']['name'],
+                                                  newCapacidad: data[index]
+                                                              ['game']
+                                                          ['number_of_players']
+                                                      .toString(),
+                                                  newCuota: data[index]['game']
+                                                          ['cuota']
+                                                      .toString(),
+                                                  newFechaInit: data[index]
+                                                          ['game']['start_date']
+                                                      .toString(),
+                                                  newPeriodo: data[index]
+                                                          ['game']['period']
+                                                      ['name']);
+                                              context.push('/invitacion');
+                                            },
                                           ),
                                         ),
                                       );
