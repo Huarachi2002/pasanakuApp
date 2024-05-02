@@ -50,7 +50,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
   Future<void> denegInvit (BuildContext context) async {
     try {
       final invitacion_id = Provider.of<InvitacionProvider>(context,listen: false).id;
-      final response = await dio.delete(
+      await dio.delete(
         '/invitations/refuse',
         data: {
           "invitation_id" : invitacion_id

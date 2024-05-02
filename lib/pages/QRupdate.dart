@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pasanaku_app/api/apiServicio.dart';
+import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/widgets/drawer.dart';
+import 'package:provider/provider.dart';
 
 class QRupdate extends StatefulWidget {
   static const name = 'qrUpdate-screen';
@@ -26,9 +28,9 @@ class _QRupdateState extends State<QRupdate> {
         FormData formData = FormData.fromMap({
           "qr": await MultipartFile.fromFile(_selectedImage!.path, filename: filename),
         });
-
+        final user = Provider.of<UserProvider>(context,listen: false);
         final response = await dio.put(
-          '/player',
+          '/player/${user.id}/qr',
           data: formData
         );
         print('imagen subida');
@@ -163,6 +165,22 @@ class _QRupdateState extends State<QRupdate> {
                               ElevatedButton.icon(
                                 onPressed: (){
                                   updateQr();
+                                  showDialog(
+                                    context: context, 
+                                    builder: (context) => AlertDialog(
+                                      actions: [
+                                        TextButton(
+                                          onPressed: (){
+                                            context.pop();
+                                          }, 
+                                          child: const Text('ok')
+                                        )
+                                      ],
+                                      title: const Text('Imagen Subida'),
+                                      contentPadding: const EdgeInsets.all(20),
+                                      content: const Text('Se subio correctamente la imagen'),
+                                    )
+                                  );
                                 }, 
                                 icon: const Icon(Icons.upload), 
                                 label: const Text('Actualizar QR')

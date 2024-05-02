@@ -141,7 +141,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                               children: [
                                 Center(
                                   child: SizedBox(
-                                    child: Image.network(url),
+                                    child: (cuota.pathQr != '') ?Image.network(url) : Image.asset('assets/errorImage.jpg'),
                                     width: 200,  
                                     height: 200,
                                   ),

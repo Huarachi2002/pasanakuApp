@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final player = Provider.of<UserProvider>(context, listen: false);
       final response = await dio.get('/invitations/${player.userEmail}');
+      print('length invitacion: ${response.data['data'].length}');
       if (response.data['data'].length > 0) invitacion = true;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -54,8 +55,8 @@ class _HomePageState extends State<HomePage> {
     try {
       final player = Provider.of<UserProvider>(context, listen: false);
       final response = await dio.get('/notification/${player.id}');
-      print(response.data['data']);
-      if (response.data['data'].length > 0) invitacion = true;
+      // print(response.data['data']);
+      if (response.data['data'].length > 0) notificacion = true;
     } on DioException catch (e) {
       if (e.response != null) {
         print('data: ${e.response!.data}');
@@ -221,6 +222,7 @@ class _HomePageState extends State<HomePage> {
                         IconButton(
                           onPressed: () {
                             context.push('/invitations');
+                            invitacion = false;
                           },
                           icon: (invitacion)
                               ? const Icon(
@@ -234,13 +236,15 @@ class _HomePageState extends State<HomePage> {
                                   size: 30,
                                 )),
                         IconButton(onPressed: () {
-                          context.push('/qr-details/123');
+                            context.push('/notificacion');
+                            notificacion = false;
                           }, 
                           icon: 
                           (notificacion)
                           ? const Icon(Icons.notifications, color: Colors.amber,size: 30,)
                           : const Icon(Icons.notifications, color: Colors.black,size: 30,)
                         ),
+                        const SizedBox(height: 20,)
                       ],
                     ),
                   ),

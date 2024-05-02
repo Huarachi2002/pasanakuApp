@@ -164,14 +164,6 @@ class _PartidaPageState extends State<PartidaPage> {
                 ],
               ),
         ),
-        actions: [
-          IconButton(
-            onPressed: (){
-              context.push('/notificacion');
-            }, 
-            icon: const Icon(Icons.notifications, color: Colors.black,size: 30,)
-          )
-        ],
       ),
       body: Container(
         color: const Color(0xFF318CE7),
