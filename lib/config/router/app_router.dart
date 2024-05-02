@@ -7,6 +7,7 @@ import 'package:pasanaku_app/pages/NotificacionPage.dart';
 import 'package:pasanaku_app/pages/PartidaPage.dart';
 import 'package:pasanaku_app/pages/PujaPage.dart';
 import 'package:pasanaku_app/pages/QRDetallesPage.dart';
+import 'package:pasanaku_app/pages/QRupdate.dart';
 import 'package:pasanaku_app/pages/RegisterPage.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -60,6 +61,11 @@ final appRouter = GoRouter(
         path: '/notificacion',
         name: NotificacionPage.name,
         builder: (context, state) => const NotificacionPage(),
+      ),
+      GoRoute(
+        path: '/qr-update',
+        name: QRupdate.name,
+        builder: (context, state) => const QRupdate(),
       ),
       GoRoute(
         path: '/qr-details/:messageId',

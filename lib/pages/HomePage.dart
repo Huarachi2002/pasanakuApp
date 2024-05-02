@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentIndex = 0;
   bool invitacion = false;
+  bool notificacion = false;
 
   bool load = true;
   String id = '';
@@ -26,18 +31,30 @@ class _HomePageState extends State<HomePage> {
 
   List<dynamic> dataFiltrada = [];
   final filtro = ['Iniciado', 'En espera', 'Finalizado'];
-  final dio = Dio(
-    BaseOptions(
-        // baseUrl: 'http://192.168.100.17:3001/api',
-        baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'),
-  );
 
   List<dynamic> data = [];
 
-  Future<void> getNotification() async {
+  Future<void> getInvitaciones() async {
     try {
       final player = Provider.of<UserProvider>(context, listen: false);
       final response = await dio.get('/invitations/${player.userEmail}');
+      if (response.data['data'].length > 0) invitacion = true;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print('data: ${e.response!.data}');
+        print('headers: ${e.response!.headers}');
+        print('requestOptions: ${e.response!.requestOptions}');
+      } else {
+        print('requestOptions: ${e.requestOptions}');
+        print(e.message);
+      }
+    }
+  }
+  Future<void> getNotificaciones() async {
+    try {
+      final player = Provider.of<UserProvider>(context, listen: false);
+      final response = await dio.get('/notification/${player.id}');
+      print(response.data['data']);
       if (response.data['data'].length > 0) invitacion = true;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -86,14 +103,16 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getPartidas();
-    getNotification();
+    // getPartidas();
+    // getInvitaciones();
+    // getNotificaciones();
     reload();
   }
 
   void reload() {
     getPartidas();
-    getNotification();
+    getInvitaciones();
+    getNotificaciones();
     _timer = Timer(const Duration(seconds: 2), () {
       setState(() {
         load = !load;
@@ -134,9 +153,7 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.assistant_photo_rounded),
                   label: 'FINALIZADOS'),
             ]),
-        drawer: const Drawer(
-          backgroundColor: Color(0xFF666F88),
-        ),
+        drawer: const DrawerView(),
         appBar: AppBar(
           backgroundColor: const Color(0xFF318CE7),
           title: const Center(
@@ -165,31 +182,6 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  context.push('/invitations');
-                  // context.push('/qr-details/343');
-                },
-                icon: (invitacion)
-                    ? const Icon(
-                        Icons.group_add,
-                        color: Colors.amber,
-                        size: 30,
-                      )
-                    : const Icon(
-                        Icons.group_add,
-                        color: Colors.black,
-                        size: 30,
-                      )),
-            // IconButton(
-            //   onPressed: (){
-            //     context.read<NotificationsBloc>().requestPermission();
-            //   },
-            //   icon: const Icon(Icons.settings)
-            // ),
-            IconButton(onPressed: () {
-              context.push('/notificacion');
-            }, icon: const Icon(Icons.notifications)),
-            IconButton(
-                onPressed: () {
                   logout();
                 },
                 icon: const Icon(
@@ -198,20 +190,59 @@ class _HomePageState extends State<HomePage> {
                 )),
           ],
         ),
-        body: Container(
-          color: const Color(0xFF318CE7),
-          child: SingleChildScrollView(
+        body: SingleChildScrollView(
+          child: Container(
+            color: const Color(0xFF318CE7),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 90),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                        suffixIcon: Icon(Icons.search_outlined),
-                        label: Text(
-                          'Buscar',
-                          style: TextStyle(color: Colors.white),
-                        )),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(width: 60,),
+                        SizedBox(
+                          width: 250,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                  suffixIcon: Icon(Icons.search_outlined),
+                                  label: Text(
+                                    'Buscar',
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20,),
+                        IconButton(
+                          onPressed: () {
+                            context.push('/invitations');
+                          },
+                          icon: (invitacion)
+                              ? const Icon(
+                                  Icons.group_add,
+                                  color: Colors.amber,
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.group_add,
+                                  color: Colors.black,
+                                  size: 30,
+                                )),
+                        IconButton(onPressed: () {
+                          context.push('/qr-details/123');
+                          }, 
+                          icon: 
+                          (notificacion)
+                          ? const Icon(Icons.notifications, color: Colors.amber,size: 30,)
+                          : const Icon(Icons.notifications, color: Colors.black,size: 30,)
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(

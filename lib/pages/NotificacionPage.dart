@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/api/apiServicio.dart';
 // import 'package:pasanaku_app/models/Invitaciones.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
@@ -16,17 +17,10 @@ class NotificacionPage extends StatefulWidget {
 }
 
 class _NotificacionPageState extends State<NotificacionPage> {
-  bool notification = false;
   List<dynamic> data = [];
   bool load = true;
   late Timer _timer;
-
-  final dio = Dio(
-    BaseOptions(
-        // baseUrl: 'http://192.168.100.17:3001/api',
-        baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'),
-  );
-
+  
   Future<void> getInvitaciones(BuildContext context) async {
     try {
       final player = Provider.of<UserProvider>(context, listen: false);
@@ -117,25 +111,6 @@ class _NotificacionPageState extends State<NotificacionPage> {
               ],
             ),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    notification = !notification;
-                  });
-                },
-                icon: (notification)
-                    ? const Icon(
-                        Icons.notifications_active_rounded,
-                        color: Colors.amber,
-                        size: 30,
-                      )
-                    : const Icon(
-                        Icons.notifications,
-                        color: Colors.black,
-                        size: 30,
-                      ))
-          ],
         ),
         body: SingleChildScrollView(
           child: Container(

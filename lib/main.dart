@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pasanaku_app/config/router/app_router.dart';
 import 'package:pasanaku_app/config/theme/appTheme.dart';
+import 'package:pasanaku_app/providers/cuota_provider.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PartidaProvider(),),
         ChangeNotifierProvider(create: (context) => PreviousRouteProvider(),),
         ChangeNotifierProvider(create: (context) => PujaProvider(),),
+        ChangeNotifierProvider(create: (context) => CuotaProvider(),),
       ],
       child: MaterialApp.router(
         theme: AppTheme().getTheme(),
@@ -90,6 +92,7 @@ class _HandleNotificationInteractionsState extends State<HandleNotificationInter
     // Run code required to handle interacted messages in an async function
     // as initState() must not be async
     setupInteractedMessage();
+    context.read<NotificationsBloc>().requestPermission();
   }
 
   @override

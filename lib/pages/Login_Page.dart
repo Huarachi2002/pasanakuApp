@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/previuosRoute_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
@@ -24,13 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   String errorMessage = '';
   String errorPassword = '';
   String password_text = '';
-
-  final dio = Dio(
-    BaseOptions(
-      // baseUrl: 'http://192.168.100.17:3001/api',
-      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'
-    ),
-  );
 
   Future<void> loginUser(String token) async{
     try {
@@ -57,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         context.push(routePrevious);
       }else{
         if(response3.data['data'].length > 0){
-          context.push('/notificacion');
+          context.push('/invitations');
         }else{
           context.push('/home');
         }
@@ -90,7 +84,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final token = context.watch<NotificationsBloc>().state.token;
+    final bloc = context.watch<NotificationsBloc>().state;
+    print('status: ${bloc.status}');
+    print('token: ${bloc.token}');
     return SingleChildScrollView(
       child: Container(
         color: const Color(0xff6AA9E9),
@@ -232,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       final isValid = _formKey.currentState!.validate();
                       if(!isValid) return;
-                      loginUser(token);
+                      loginUser(bloc.token);
                       // print('Error: ${errorMessage}');
                     }, 
                     style: const ButtonStyle(
@@ -262,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-              const SizedBox(height: 350,),
+              const SizedBox(height: 180,),
               const Text(
                 'Al continuar, declaras tu conformidad con nuestras',
                 style: TextStyle(

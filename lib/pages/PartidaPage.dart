@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/api/apiServicio.dart';
+import 'package:pasanaku_app/providers/cuota_provider.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class PartidaPage extends StatefulWidget {
@@ -21,24 +24,18 @@ class PartidaPage extends StatefulWidget {
 class _PartidaPageState extends State<PartidaPage> {
   int currentStep = 0;
   List<dynamic> data = [];
+  List<dynamic> dataCuota = [];
   bool load = true;
   bool statePuja = false;
   PartidaProvider? partida;
 
   Map<String, MaterialColor> color = {
-    "Inciados": Colors.green,
+    "Iniciado": Colors.green,
     "En espera": Colors.yellow,
     "Finalizados": Colors.red
   };
 
   late Timer _timer;
-
-  final dio = Dio(
-    BaseOptions(
-      // baseUrl: 'http://192.168.100.17:3001/api',
-      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'
-    ),
-  );
 
   Future<void> getParticipants() async {
     try {
@@ -46,13 +43,13 @@ class _PartidaPageState extends State<PartidaPage> {
       partida = Provider.of<PartidaProvider>(context, listen: false);
       final response = await dio.get('/participant/gamePk/${partida!.id}');
       data = response.data['data'];
-      data.forEach((participant) {
-        print('${participant['player_id']} == ${player.id}');
+      for (var participant in data) {
+        // print('${participant['player_id']} == ${player.id}');
         if(participant['player_id'] == player.id) {
           player.changeParticipantId(newId: participant['id']);
-          print(participant['id']);
+          // print(participant['id']);
         }
-      });
+      }
       // print('Data Participantes: $data');
       // print('Data Participantes: ${data[0]['player']['name']}');
     } on DioException catch (e) {
@@ -71,7 +68,7 @@ class _PartidaPageState extends State<PartidaPage> {
   Future<void> getPuja()async{
     try {
       final response = await dio.get('/numbers/${partida!.id}');
-      print(response.data['data']);
+      // print(response.data['data']);
       if(response.data['data'].length > 0) statePuja = true;
     } on DioException catch (e) {
         if(e.response != null){
@@ -85,9 +82,30 @@ class _PartidaPageState extends State<PartidaPage> {
         }
     } 
   }
+
+  Future<void> getCuotas()async{
+    try {
+      final user = Provider.of<UserProvider>(context, listen: false);
+      final game = Provider.of<PartidaProvider>(context,listen: false);
+      final response = await dio.get('/transfers/${game.id}/${user.id}');
+      dataCuota = response.data['data'];
+      print("dataCuota: $dataCuota");  
+    } on DioException catch (e) {
+      if(e.response != null){
+        print('data: ${e.response!.data}');
+        print('headers: ${e.response!.headers}');
+        print('requestOptions: ${e.response!.requestOptions}');
+        // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+      }else{
+        print('requestOptions: ${e.requestOptions}');
+        print(e.message);
+      }
+    } 
+  }
   void reload (){
     getParticipants();
     getPuja();
+    getCuotas();
     _timer = Timer(const Duration(seconds: 2), (){
       setState(() {
         load = !load;
@@ -100,6 +118,7 @@ class _PartidaPageState extends State<PartidaPage> {
     // TODO: implement initState
     super.initState();
     getParticipants();
+    getCuotas();
     getPuja();
     _timer = Timer(Duration(seconds: 1), () {
       setState(() {
@@ -119,10 +138,7 @@ class _PartidaPageState extends State<PartidaPage> {
   Widget build(BuildContext context) {
     final partidaInfo = Provider.of<PartidaProvider>(context, listen: false);
     return Scaffold(
-      drawer: const Drawer(
-        backgroundColor: Color(0xFF666F88),
-        
-      ),
+      drawer: const DrawerView(),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
         title: const Center(
@@ -423,7 +439,7 @@ class _PartidaPageState extends State<PartidaPage> {
                               borderRadius: BorderRadius.circular(20)
                             ),
                             child: 
-                            (true)
+                            (dataCuota.isEmpty)
                             ? const Center(
                                 child: Text(
                                   'Vacio', 
@@ -435,69 +451,116 @@ class _PartidaPageState extends State<PartidaPage> {
                                   ),
                                 ),)
                             :
-                            Column(
-                              children: [
-                                
-                              ],
-                            )
-                          ),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Cuota Actual', 
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.none,
-                              fontSize: 22
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SizedBox(
-                          height: 70,
-                          width: double.infinity,
-                          child: Container(
-                             decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)
-                              ),
-                            child: Center(
-                              child: ListView.builder(
-                                itemCount: 10,
-                                scrollDirection: Axis.horizontal,
-                                padding: const EdgeInsets.only(left: 20),
-                                itemBuilder: (context, index) {
-                                  return Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 35,
-                                        height: 35,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(50)
+                            ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: dataCuota.length,
+                              itemBuilder: (context, index) {
+                                return SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: Card(
+                                    color: const Color(0xFF318CE7),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                            'Ronda ${dataCuota[index]['number']['number']} no pagada', 
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              decoration: TextDecoration.none,
+                                              fontSize: 20
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        child: Center(child: Text('${index+1}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
-                                      ),
-                                      (index != 9)
-                                        ?const SizedBox(width: 20,child: Divider(color: Colors.grey,))
-                                        :const SizedBox(width: 20,)
-                                    ],
-                                  );
-                                },
-                              ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                                          child: ElevatedButton.icon(
+                                            onPressed: (){
+                                              Provider.of<CuotaProvider>(context,listen: false).changeCuota(
+                                                newId: dataCuota[index]['id'].toString(),
+                                                newCuota: dataCuota[index]['cuota'],
+                                                newDiscount: dataCuota[index]['discount'],
+                                                newFecha: dataCuota[index]['number']['transfer_end_date'],
+                                                newPenaltyFee: dataCuota[index]['penalty_fee'],
+                                                newState: dataCuota[index]['state'],
+                                                newTotalAmount: dataCuota[index]['total_amount']
+                                              );
+                                              context.push('/qr-details/1');
+                                            }, 
+                                            icon: const Icon(Icons.qr_code_2), 
+                                            label: const Text('Ver Qr')
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      // const Padding(
+                      //   padding: EdgeInsets.all(15),
+                      //   child: Align(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: Text(
+                      //       'Cuota Actual', 
+                      //       style: TextStyle(
+                      //         color: Colors.black,
+                      //         fontWeight: FontWeight.bold,
+                      //         decoration: TextDecoration.none,
+                      //         fontSize: 22
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 20),
+                      //   child: SizedBox(
+                      //     height: 70,
+                      //     width: double.infinity,
+                      //     child: Container(
+                      //        decoration: BoxDecoration(
+                      //           color: Colors.white,
+                      //           borderRadius: BorderRadius.circular(20)
+                      //         ),
+                      //       child: Center(
+                      //         child: ListView.builder(
+                      //           itemCount: 10,
+                      //           scrollDirection: Axis.horizontal,
+                      //           padding: const EdgeInsets.only(left: 20),
+                      //           itemBuilder: (context, index) {
+                      //             return Row(
+                      //               crossAxisAlignment: CrossAxisAlignment.center,
+                      //               mainAxisAlignment: MainAxisAlignment.center,
+                      //               children: [
+                      //                 Container(
+                      //                   width: 35,
+                      //                   height: 35,
+                      //                   decoration: BoxDecoration(
+                      //                     color: Colors.grey,
+                      //                     borderRadius: BorderRadius.circular(50)
+                      //                   ),
+                      //                   child: Center(child: Text('${index+1}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
+                      //                 ),
+                      //                 (index != 9)
+                      //                   ?const SizedBox(width: 20,child: Divider(color: Colors.grey,))
+                      //                   :const SizedBox(width: 20,)
+                      //               ],
+                      //             );
+                      //           },
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),

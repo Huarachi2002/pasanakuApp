@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/painting.dart';
 // import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -19,15 +20,6 @@ class InvitacionPage extends StatefulWidget {
 class _InvitacionPageState extends State<InvitacionPage> {
   final List<Map<String,String>> data = [];
   List<dynamic> dataPart = [];
-
-  final dio = Dio(
-    BaseOptions(
-      // baseUrl: 'http://192.168.100.17:3001/api',
-      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api',
-    ),
-  );
-
-
 
   Future<void> confirmInvit (BuildContext context) async {
     try {
@@ -111,14 +103,6 @@ class _InvitacionPageState extends State<InvitacionPage> {
               ),
 
         ),
-        actions: [
-          IconButton(
-            onPressed: (){
-              context.push('/notificacion');
-            }, 
-            icon: const Icon(Icons.notifications, color: Colors.black,size: 30,)
-          )
-        ],
       ),
       body: Container(
         color: const Color(0xFF318CE7),
@@ -245,7 +229,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                   ),
                                 ),
                                 Text(
-                                  context.watch<InvitacionProvider>().fechaInit, 
+                                  context.watch<InvitacionProvider>().fechaInit.substring(0,10), 
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,

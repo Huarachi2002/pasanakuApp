@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:pasanaku_app/widgets/custom_text_form_field.dart';
@@ -33,34 +34,46 @@ class _RegisterPageState extends State<RegisterPage> {
   String password_text = '';
   String password2_text = '';
   String qrPath = '';
-
   String erroEmail = '';
-
-  final dio = Dio(
-    BaseOptions(
-      // baseUrl: 'http://192.168.100.17:3001/api',
-      baseUrl: 'http://www.ficct.uagrm.edu.bo:3001/api'
-    ),
-  );
-
+  
   Future<void> registerUser(String token) async{
     try {
-
-      String filename =  _selectedImage?.path.split('/').last?? '';
-      print(filename);
-      final response = await dio.post(
-        '/player',
-        data: {
-          "email":correo_text,
+      Response response;
+      if(_selectedImage != null){
+        String filename =  _selectedImage!.path.split('/').last;
+        print(filename);
+        FormData formData = FormData.fromMap({
+          "email": correo_text,
           "name": nombre_text,
           "ci": ci_text,
           "password": password_text,
           "address": "prueba",
           "telephone": '+591$telefono_text',
-          "token_FCM" : token,
-          "path_qr" : filename
-        }
-      );
+          "token_FCM": token,
+          "qr": await MultipartFile.fromFile(_selectedImage!.path, filename: filename),
+        });
+
+        response = await dio.post(
+          '/player',
+          data: formData
+        );
+        print('imagen subida');
+        print(response.data['data']);
+      }else{
+        response = await dio.post(
+          '/player',
+          data: {
+            "email":correo_text,
+            "name": nombre_text,
+            "ci": ci_text,
+            "password": password_text,
+            "address": "prueba",
+            "telephone": '+591$telefono_text',
+            "token_FCM" : token,
+          }
+        );
+      }
+
       // print('Response register: ${response.data}');
       context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id'], newState: 'authenticated');
       final response2 = await dio.get('/invitations/${correo_text}');
@@ -100,6 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final token = context.watch<NotificationsBloc>().state.token;
+    print('token: $token');
     return SingleChildScrollView(
       child: Container(
         color: const Color(0xff6AA9E9),
