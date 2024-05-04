@@ -80,7 +80,10 @@ Widget buildMenuItems(BuildContext context) => Container(
       ListTile(
         leading: const Icon(Icons.build),
         title: const Text('Configuraciones'),
-        onTap: (){},
+        onTap: (){
+          context.pop();
+          context.push('/downloader');
+        },
       ),
       const Divider(),
       ListTile(

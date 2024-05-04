@@ -24,17 +24,17 @@ class _QRupdateState extends State<QRupdate> {
     try {
       if(_selectedImage != null){
         String filename =  _selectedImage!.path.split('/').last;
-        print(filename);
+        // print(filename);
         FormData formData = FormData.fromMap({
           "qr": await MultipartFile.fromFile(_selectedImage!.path, filename: filename),
         });
         final user = Provider.of<UserProvider>(context,listen: false);
-        final response = await dio.put(
+        await dio.put(
           '/player/${user.id}/qr',
           data: formData
         );
         print('imagen subida');
-        print(response.data['data']);
+        // print(response.data['data']);
       }
     } on DioException catch (e) {
         if(e.response != null){

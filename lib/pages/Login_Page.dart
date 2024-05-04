@@ -41,12 +41,12 @@ class _LoginPageState extends State<LoginPage> {
           'token_FCM': token
         }
       );
-      print(response.statusCode);
+      // print(response.statusCode);
       context.read<UserProvider>().changeUserEmail(newUserEmail: correo_text, newId: response.data['data']['id'], newState: 'authenticated');
 
       final response3 = await dio.get('/invitations/$correo_text');      
       final routePrevious = Provider.of<PreviousRouteProvider>(context, listen: false).route;
-      print('route: $routePrevious');
+      // print('route: $routePrevious');
       if(routePrevious != ''){ 
         context.push(routePrevious);
       }else{
@@ -64,8 +64,8 @@ class _LoginPageState extends State<LoginPage> {
           // print('headers: ${e.response!.headers}');
           // print('requestOptions: ${e.response!.requestOptions}');
           setState(() {
-            if(e.response!.data['meta']['message'] == 'Bad request'){
-              errorMessage = e.response!.data['errors']['details'][0]["msg"];
+            if(e.response!.data['meta']['message'] == 'Datos incorrectos'){
+              errorMessage = e.response!.data['errors']['details'][0];
             }else{
               errorPassword = 'Contraseña incorrecta';
             }
@@ -85,8 +85,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<NotificationsBloc>().state;
-    print('status: ${bloc.status}');
-    print('token: ${bloc.token}');
+    // print('status: ${bloc.status}');
+    // print('token: ${bloc.token}');
     return SingleChildScrollView(
       child: Container(
         color: const Color(0xff6AA9E9),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
@@ -7,6 +9,7 @@ import 'package:pasanaku_app/domain/entities/push_message.dart';
 import 'package:pasanaku_app/providers/cuota_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class QRDetallesPage extends StatefulWidget {
@@ -18,8 +21,32 @@ class QRDetallesPage extends StatefulWidget {
   State<QRDetallesPage> createState() => _QRDetallesPageState();
 }
 
+
 class _QRDetallesPageState extends State<QRDetallesPage> {
   double? _progress;
+  String pathQr ='';
+  bool load = true;
+  late Timer _timer;
+
+  Future<void>getQr()async{
+    try { 
+      final cuota = Provider.of<CuotaProvider>(context,listen: false);
+      final response = await dio.get('/player/${cuota.destination_participant_id}');
+      print('dataDestination: ${response.data['data']}');
+      pathQr = response.data['data']['path_qr'].toString();
+      print('Pathqr: $pathQr');
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print('data: ${e.response!.data}');
+        print('headers: ${e.response!.headers}');
+        print('requestOptions: ${e.response!.requestOptions}');
+        // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
+      } else {
+        print('requestOptions: ${e.requestOptions}');
+        print(e.message);
+      }
+    }
+  }
 
   Future<void> pagar()async{
     try {
@@ -39,6 +66,26 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getQr();
+    _timer = Timer(const Duration(seconds: 5), () {
+      setState(() {
+        load = !load;
+      });
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final PushMessage? message;
     if(widget.pushMessageId != 1){
@@ -46,12 +93,11 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
     }
     final user = Provider.of<UserProvider>(context,listen: false);
     final cuota = Provider.of<CuotaProvider>(context, listen: false);
-    String url = 'http://www.ficct.uagrm.edu.bo:3001/uploads/player/${user.id}/${cuota.pathQr}';
+    print('userID: ${user.id} , pathQr: $pathQr');
+    String url = 'http://www.ficct.uagrm.edu.bo:3001/uploads/player/${cuota.destination_participant_id}/$pathQr';
+    print(url);
     return Scaffold(
-      drawer: const Drawer(
-        backgroundColor: Color(0xFF666F88),
-
-      ),
+      drawer: const DrawerView(),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
         title: const Center(
@@ -139,9 +185,12 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                (load)
+                                ? const Center(child: CircularProgressIndicator())
+                                :
                                 Center(
                                   child: SizedBox(
-                                    child: (cuota.pathQr != '') ?Image.network(url) : Image.asset('assets/errorImage.jpg'),
+                                    child: (pathQr != '') ?Image.network(url) : Image.asset('assets/errorImage.jpg'),
                                     width: 200,  
                                     height: 200,
                                   ),
@@ -237,7 +286,11 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton.icon(
-                                onPressed: () {
+                                onPressed: 
+                                (load)
+                                ? null
+                                :
+                                  () {
                                   FileDownloader.downloadFile(
                                     // url: message.imageUrl!.trim(),
                                     url: url,
@@ -251,6 +304,13 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                       setState(() {
                                         _progress = null;
                                       });
+                                    },
+                                    onDownloadError: (errorMessage) {
+                                      print('DOWNLOAD ERROR: $errorMessage');
+                                    },
+                                    notificationType: NotificationType.all,
+                                    onDownloadRequestIdReceived: (downloadId) {
+                                      print('downloadId: $downloadId');
                                     },
                                   );
                               

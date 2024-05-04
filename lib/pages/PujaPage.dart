@@ -39,13 +39,13 @@ class _PujaPageState extends State<PujaPage> {
       final game = Provider.of<PartidaProvider>(context,listen: false);
       final response = await dio.get('/numbers/${game.id}');
       data = response.data['data'];
-      print(data);
-      data.forEach((number) { 
+      // print(data);
+      for (var number in data) { 
         if(number['state']) idPuja = number['id'].toString(); 
-        print('idPuja: $idPuja');
+        // print('idPuja: $idPuja');
         if(number['player_id'] == player.id) statePujar = false;
-        print('statePujar: $statePujar');
-      });
+        // print('statePujar: $statePujar');
+      }
       getPujar();
     } on DioException catch (e) {
         if(e.response != null){
@@ -70,7 +70,7 @@ class _PujaPageState extends State<PujaPage> {
           "participant_id": player.idParticipant
         }
       );
-      print(response.data['data'].length);
+      // print(response.data['data'].length);
       if(response.data['data'].length>0){
         statePujar = false;
         montoPuja = response.data['data'][0]['amount'];
@@ -91,7 +91,7 @@ class _PujaPageState extends State<PujaPage> {
   Future<void> postPujar(BuildContext context)async{
       try {
         final player = Provider.of<UserProvider>(context, listen: false);
-        print('playerIdPart: ${player.idParticipant}, idPuja: $idPuja , amount: $montoPuja');
+        // print('playerIdPart: ${player.idParticipant}, idPuja: $idPuja , amount: $montoPuja');
         final response = await dio.post(
           '/offer/$idPuja',
           data: {
@@ -252,6 +252,7 @@ class _PujaPageState extends State<PujaPage> {
                                       shrinkWrap: true,
                                       itemCount: data.length,
                                       itemBuilder: (context, index) {
+                                        // print(data[index]);
                                         return SizedBox(
                                           width: double.infinity,
                                           height: 50,
@@ -315,7 +316,7 @@ class _PujaPageState extends State<PujaPage> {
                                                                 statePujar = false;
                                                                 montoPuja = currentValue;
                                                                 postPujar(context);
-                                                                print(montoPuja);
+                                                                // print(montoPuja);
                                                               });
                                                             }, 
                                                             icon: const Icon(Icons.monetization_on_rounded), 
@@ -325,7 +326,7 @@ class _PujaPageState extends State<PujaPage> {
                                                       )
                                                     :
                                                       Text(
-                                                        data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)?'${data[index]['player']['name'].substring(0,15)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['ganador']} (${data[index]['winning_amount']} Bs)',
+                                                        data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)? '${data[index]['player']['name'].substring(0,15)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['player']['name']} (${data[index]['winning_amount']} Bs)',
                                                         style: const TextStyle(
                                                           color: Colors.white,
                                                           // fontWeight: FontWeight.bold,

@@ -89,7 +89,7 @@ class _PartidaPageState extends State<PartidaPage> {
       final game = Provider.of<PartidaProvider>(context,listen: false);
       final response = await dio.get('/transfers/${game.id}/${user.id}');
       dataCuota = response.data['data'];
-      print("dataCuota: $dataCuota");  
+      // print("dataCuota: $dataCuota");  
     } on DioException catch (e) {
       if(e.response != null){
         print('data: ${e.response!.data}');
@@ -120,7 +120,7 @@ class _PartidaPageState extends State<PartidaPage> {
     getParticipants();
     getCuotas();
     getPuja();
-    _timer = Timer(Duration(seconds: 1), () {
+    _timer = Timer(const Duration(seconds: 1), () {
       setState(() {
         load = !load;
       });
@@ -137,6 +137,7 @@ class _PartidaPageState extends State<PartidaPage> {
   @override
   Widget build(BuildContext context) {
     final partidaInfo = Provider.of<PartidaProvider>(context, listen: false);
+    final user = Provider.of<UserProvider>(context,listen: false);
     return Scaffold(
       drawer: const DrawerView(),
       appBar: AppBar(
@@ -335,7 +336,9 @@ class _PartidaPageState extends State<PartidaPage> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                        '${data[0]['player']['name']}',
+                                          (data[0]['player']['id']==user.id) 
+                                          ?'${data[0]['player']['name']} (Yo)'
+                                          :'${data[0]['player']['name']}',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           // fontWeight: FontWeight.bold,
@@ -383,7 +386,10 @@ class _PartidaPageState extends State<PartidaPage> {
                                             child: Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                              '${index+1}. ${data[index+1]['player']['name']}', 
+                                                // '${index+1}. ${data[index+1]['player']['name']}',
+                                                (user.id == data[index+1]['player_id'])
+                                                ? '${index+1}. ${data[index+1]['player']['name']} (Yo)' 
+                                                : '${index+1}. ${data[index+1]['player']['name']}',
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 // fontWeight: FontWeight.bold,
@@ -474,6 +480,7 @@ class _PartidaPageState extends State<PartidaPage> {
                                           padding: const EdgeInsets.symmetric(horizontal: 15),
                                           child: ElevatedButton.icon(
                                             onPressed: (){
+                                              // print('dataCuota[index]: ${dataCuota[index]}');
                                               Provider.of<CuotaProvider>(context,listen: false).changeCuota(
                                                 newId: dataCuota[index]['id'].toString(),
                                                 newCuota: dataCuota[index]['cuota'],
@@ -481,7 +488,8 @@ class _PartidaPageState extends State<PartidaPage> {
                                                 newFecha: dataCuota[index]['number']['transfer_end_date'],
                                                 newPenaltyFee: dataCuota[index]['penalty_fee'],
                                                 newState: dataCuota[index]['state'],
-                                                newTotalAmount: dataCuota[index]['total_amount']
+                                                newTotalAmount: dataCuota[index]['total_amount'],
+                                                newDestination_participant_id: dataCuota[index]['destination_participant_id']
                                               );
                                               context.push('/qr-details/1');
                                             }, 
@@ -498,61 +506,6 @@ class _PartidaPageState extends State<PartidaPage> {
                           ),
                         ),
                       ),
-                      // const Padding(
-                      //   padding: EdgeInsets.all(15),
-                      //   child: Align(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(
-                      //       'Cuota Actual', 
-                      //       style: TextStyle(
-                      //         color: Colors.black,
-                      //         fontWeight: FontWeight.bold,
-                      //         decoration: TextDecoration.none,
-                      //         fontSize: 22
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 20),
-                      //   child: SizedBox(
-                      //     height: 70,
-                      //     width: double.infinity,
-                      //     child: Container(
-                      //        decoration: BoxDecoration(
-                      //           color: Colors.white,
-                      //           borderRadius: BorderRadius.circular(20)
-                      //         ),
-                      //       child: Center(
-                      //         child: ListView.builder(
-                      //           itemCount: 10,
-                      //           scrollDirection: Axis.horizontal,
-                      //           padding: const EdgeInsets.only(left: 20),
-                      //           itemBuilder: (context, index) {
-                      //             return Row(
-                      //               crossAxisAlignment: CrossAxisAlignment.center,
-                      //               mainAxisAlignment: MainAxisAlignment.center,
-                      //               children: [
-                      //                 Container(
-                      //                   width: 35,
-                      //                   height: 35,
-                      //                   decoration: BoxDecoration(
-                      //                     color: Colors.grey,
-                      //                     borderRadius: BorderRadius.circular(50)
-                      //                   ),
-                      //                   child: Center(child: Text('${index+1}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
-                      //                 ),
-                      //                 (index != 9)
-                      //                   ?const SizedBox(width: 20,child: Divider(color: Colors.grey,))
-                      //                   :const SizedBox(width: 20,)
-                      //               ],
-                      //             );
-                      //           },
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // )
                     ],
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:pasanaku_app/pages/Dowload.dart';
 import 'package:pasanaku_app/pages/HomePAge.dart';
 import 'package:pasanaku_app/pages/InvitacionPage.dart';
 import 'package:pasanaku_app/pages/InvitacionesPage.dart';
@@ -61,6 +62,11 @@ final appRouter = GoRouter(
         path: '/notificacion',
         name: NotificacionPage.name,
         builder: (context, state) => const NotificacionPage(),
+      ),
+      GoRoute(
+        path: '/downloader',
+        name: SingleDownloader.name,
+        builder: (context, state) => const SingleDownloader(),
       ),
       GoRoute(
         path: '/qr-update',

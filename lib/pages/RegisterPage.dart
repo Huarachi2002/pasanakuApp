@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
       Response response;
       if(_selectedImage != null){
         String filename =  _selectedImage!.path.split('/').last;
-        print(filename);
+        // print(filename);
         FormData formData = FormData.fromMap({
           "email": correo_text,
           "name": nombre_text,
@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
           data: formData
         );
         print('imagen subida');
-        print(response.data['data']);
+        // print(response.data['data']);
       }else{
         response = await dio.post(
           '/player',
@@ -87,9 +87,9 @@ class _RegisterPageState extends State<RegisterPage> {
     }on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
-          setState(() {
-            erroEmail = e.response!.data['errors']['details'][0]['msg'];
-          });
+          // setState(() {
+          //   erroEmail = e.response!.data['errors']['details'][0]['msg'];
+          // });
           print('headers: ${e.response!.headers}');
           print('requestOptions: ${e.response!.requestOptions}');
           // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');

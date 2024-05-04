@@ -8,7 +8,7 @@ class CuotaProvider with ChangeNotifier{
   int totalAmount;
   bool state;
   String fecha;
-  String pathQr;
+  String destination_participant_id;
 
   CuotaProvider({
     this.id = '',
@@ -18,7 +18,7 @@ class CuotaProvider with ChangeNotifier{
     this.totalAmount = 0,
     this.state = false,
     this.fecha = '',
-    this.pathQr = ''
+    this.destination_participant_id = ''
   });
 
   void changeCuota({
@@ -29,7 +29,7 @@ class CuotaProvider with ChangeNotifier{
     int? newTotalAmount,
     bool? newState,
     String? newFecha,
-    String? newPathQr
+    String? newDestination_participant_id
   }) async {
     id = newId ?? id;
     cuota = newCuota ?? cuota;
@@ -38,7 +38,7 @@ class CuotaProvider with ChangeNotifier{
     totalAmount = newTotalAmount ?? totalAmount;
     state = newState ?? state;
     fecha = newFecha ?? fecha;
-    pathQr = newPathQr ?? pathQr;
+    destination_participant_id = newDestination_participant_id ?? destination_participant_id;
     notifyListeners();
   }
 }

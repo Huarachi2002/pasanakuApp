@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final player = Provider.of<UserProvider>(context, listen: false);
       final response = await dio.get('/invitations/${player.userEmail}');
-      print('length invitacion: ${response.data['data'].length}');
+      // print('length invitacion: ${response.data['data'].length}');
       if (response.data['data'].length > 0) invitacion = true;
     } on DioException catch (e) {
       if (e.response != null) {
@@ -455,8 +455,7 @@ class _PartidaViewState extends State<_PartidaView> {
 
   @override
   Widget build(BuildContext context) {
-    final notifications =
-        context.watch<NotificationsBloc>().state.notifications;
+    final notifications =context.watch<NotificationsBloc>().state.notifications;
     // print(notifications);
     return Container(
       color: const Color(0xFF318CE7),
