@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // print('Response Invitaciones: ${response2.data['data']}');
       
       if(response2.data['data'].length > 0){
-        context.push('/notificacion');
+        context.push('/invitations');
       }else{
         context.push('/home');
       }
@@ -114,9 +114,10 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final token = context.watch<NotificationsBloc>().state.token;
     print('token: $token');
-    return SingleChildScrollView(
-      child: Container(
-        color: const Color(0xff6AA9E9),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      color: const Color(0xff6AA9E9),
+      child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(

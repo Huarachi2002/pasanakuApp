@@ -10,6 +10,7 @@ import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/puja_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class PujaPage extends StatefulWidget {
@@ -140,10 +141,7 @@ class _PujaPageState extends State<PujaPage> {
     final game = Provider.of<PartidaProvider>(context, listen: false);
     final pujaProvider = Provider.of<PujaProvider>(context, listen: false);
     return Scaffold(
-      drawer: const Drawer(
-        backgroundColor: Color(0xFF666F88),
-        
-      ),
+      drawer: const DrawerView(),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
         title: const Center(
@@ -172,213 +170,213 @@ class _PujaPageState extends State<PujaPage> {
       ),
       body: Container(
         color: const Color(0xFF318CE7),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: const Color(0xFFD9D9D9),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color(0xFFD9D9D9),
+                    ),
+                    child: InkWell(
+                      child: const Icon(Icons.arrow_back_rounded,size: 50,),
+                      onTap: () {
+                        context.pop();
+                      },
+                    )
                   ),
-                  child: InkWell(
-                    child: const Icon(Icons.arrow_back_rounded,size: 50,),
-                    onTap: () {
-                      context.pop();
-                    },
-                  )
                 ),
               ),
-            ),
-            const SizedBox(height: 10,),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: const BoxDecoration(
-                color: Color(0xFFAFCDEA),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
-              ),
-              child: SizedBox(
-                height: 845,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [     
-                      const Text(
-                        'PUJA', 
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none,
-                          fontSize: 25
-                        ),
-                      ),
-                      const SizedBox(height: 5,),
-                    
-                      const Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Lista de ganadores', 
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.none,
-                              fontSize: 22
-                            ),
+              const SizedBox(height: 10,),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFAFCDEA),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
+                ),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.85,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [     
+                        const Text(
+                          'PUJA', 
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                            fontSize: 25
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SizedBox(
-                          height: 700,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 250,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: data.length,
-                                      itemBuilder: (context, index) {
-                                        // print(data[index]);
-                                        return SizedBox(
-                                          width: double.infinity,
-                                          height: 50,
-                                          child: Card(
-                                            elevation: 4,
-                                            color: (idPuja == data[index]['id'].toString()) ? const Color(0xFF318CE7) : const Color(0xFFA3A8B7),
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                  'Ronda ${index+1}: ',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    decoration: TextDecoration.none,
-                                                    fontSize: 20
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 10,),
-                                                  statePujar && montoPuja == 0
-                                                  ?
-                                                    idPuja == data[index]['id'].toString()
-                                                    ?
-                                                      Row(
-                                                        children: [
-                                                          const SizedBox(width: 50,),
-                                                          CupertinoButton.filled(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            child: Text('$currentValue Bs'), 
-                                                            onPressed: () => showCupertinoModalPopup(
-                                                              context: context,
-                                                              builder: (_) => SizedBox(
-                                                                width: double.infinity,
-                                                                height: 250,
-                                                                child: CupertinoPicker(
-                                                                  backgroundColor: Colors.white,
-                                                                  itemExtent: 30,
-                                                                  scrollController: FixedExtentScrollController(
-                                                                    initialItem: currentValue
-                                                                  ),
-                                                                  onSelectedItemChanged: (int value) {
-                                                                    setState(() {
-                                                                      currentValue=value + (game.cuota*0.20).toInt() ;
-                                                                    });
-                                                                  },
-                                                                  children: 
-                                                                    List<Widget>.generate(game.cuota - (game.cuota*0.20).toInt(), (int index) {
-                                                                      return Center(child: Text('${index+(game.cuota*0.20).toInt()}'));
-                                                                    }
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            )
-                                                          ),
-                                                          const SizedBox(width: 45,),
-                                                          ElevatedButton.icon(
-                                                            onPressed: (){
-                                                              setState(() {
-                                                                pujaProvider.changePuja(newMont: montoPuja);
-                                                                statePujar = false;
-                                                                montoPuja = currentValue;
-                                                                postPujar(context);
-                                                                // print(montoPuja);
-                                                              });
-                                                            }, 
-                                                            icon: const Icon(Icons.monetization_on_rounded), 
-                                                            label: const Text('Pujar')
-                                                          )
-                                                        ],
-                                                      )
-                                                    :
-                                                      Text(
-                                                        data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)? '${data[index]['player']['name'].substring(0,15)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['player']['name']} (${data[index]['winning_amount']} Bs)',
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                          // fontWeight: FontWeight.bold,
-                                                          decoration: TextDecoration.none,
-                                                          fontSize: 20
-                                                        ),
-                                                      )
-                                                  :
-                                                    (montoPuja > 0  && data[index]['player'] == null && data[index]['id'].toString() == idPuja)
-                                                    ?
-                                                    Text(
-                                                        'Pujaste con $montoPuja Bs',
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                          decoration: TextDecoration.none,
-                                                          fontSize: 20
-                                                        ),
-                                                      )
-                                                    :
-                                                    Text(
-                                                        data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)?'${data[index]['player']['name'].substring(0,15)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['player']['name']} (${data[index]['winning_amount']} Bs)',
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                          decoration: TextDecoration.none,
-                                                          fontSize: 20
-                                                        ),
-                                                      )
-                                                ]   
-                                              ),
-                                            ),
-                                          )
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
+                        const SizedBox(height: 5,),
+                      
+                        const Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Lista de ganadores', 
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                                fontSize: 22
                               ),
-                            )
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      
-                      
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.70,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.65,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: data.length,
+                                        itemBuilder: (context, index) {
+                                          // print(data[index]);
+                                          return SizedBox(
+                                            width: double.infinity,
+                                            height: 50,
+                                            child: Card(
+                                              elevation: 4,
+                                              color: (idPuja == data[index]['id'].toString()) ? const Color(0xFF318CE7) : const Color(0xFFA3A8B7),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                    'Ronda ${index+1}:',
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      decoration: TextDecoration.none,
+                                                      fontSize: 16
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 5,),
+                                                    statePujar && montoPuja == 0
+                                                    ?
+                                                      idPuja == data[index]['id'].toString()
+                                                      ?
+                                                        Row(
+                                                          children: [
+                                                            const SizedBox(width: 50,),
+                                                            CupertinoButton.filled(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              child: Text('$currentValue Bs'), 
+                                                              onPressed: () => showCupertinoModalPopup(
+                                                                context: context,
+                                                                builder: (_) => SizedBox(
+                                                                  width: double.infinity,
+                                                                  height: 250,
+                                                                  child: CupertinoPicker(
+                                                                    backgroundColor: Colors.white,
+                                                                    itemExtent: 30,
+                                                                    scrollController: FixedExtentScrollController(
+                                                                      initialItem: currentValue
+                                                                    ),
+                                                                    onSelectedItemChanged: (int value) {
+                                                                      setState(() {
+                                                                        currentValue=value + (game.cuota*0.20).toInt() ;
+                                                                      });
+                                                                    },
+                                                                    children: 
+                                                                      List<Widget>.generate(game.cuota - (game.cuota*0.20).toInt(), (int index) {
+                                                                        return Center(child: Text('${index+(game.cuota*0.20).toInt()}'));
+                                                                      }
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              )
+                                                            ),
+                                                            SizedBox(width: MediaQuery.of(context).size.width * 0.10,),
+                                                            ElevatedButton.icon(
+                                                              onPressed: (){
+                                                                setState(() {
+                                                                  pujaProvider.changePuja(newMont: montoPuja);
+                                                                  statePujar = false;
+                                                                  montoPuja = currentValue;
+                                                                  postPujar(context);
+                                                                  // print(montoPuja);
+                                                                });
+                                                              }, 
+                                                              icon: const Icon(Icons.monetization_on_rounded), 
+                                                              label: const Text('Pujar')
+                                                            )
+                                                          ],
+                                                        )
+                                                      :
+                                                        Text(
+                                                          data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)? '${data[index]['player']['name'].substring(0,12)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['player']['name']} (${data[index]['winning_amount']} Bs)',
+                                                          style: const TextStyle(
+                                                            color: Colors.white,
+                                                            // fontWeight: FontWeight.bold,
+                                                            decoration: TextDecoration.none,
+                                                            fontSize: 16
+                                                          ),
+                                                        )
+                                                    :
+                                                      (montoPuja > 0  && data[index]['player'] == null && data[index]['id'].toString() == idPuja)
+                                                      ?
+                                                      Text(
+                                                          'Pujaste con $montoPuja Bs',
+                                                          style: const TextStyle(
+                                                            color: Colors.white,
+                                                            decoration: TextDecoration.none,
+                                                            fontSize: 16
+                                                          ),
+                                                        )
+                                                      :
+                                                      Text(
+                                                          data[index]['player'] == null ? 'Puja no disponible': (data[index]['player']['name'].length > 14)?'${data[index]['player']['name'].substring(0,12)}... (${data[index]['winning_amount']} Bs)' :'${data[index]['player']['name']} (${data[index]['winning_amount']} Bs)',
+                                                          style: const TextStyle(
+                                                            color: Colors.white,
+                                                            decoration: TextDecoration.none,
+                                                            fontSize: 16
+                                                          ),
+                                                        )
+                                                  ]   
+                                                ),
+                                              ),
+                                            )
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ), 
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       )
     );

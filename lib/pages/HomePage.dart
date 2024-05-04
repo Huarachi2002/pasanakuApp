@@ -191,9 +191,9 @@ class _HomePageState extends State<HomePage> {
                 )),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: const Color(0xFF318CE7),
+        body: Container(
+          color: const Color(0xFF318CE7),
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Align(
@@ -203,11 +203,11 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(width: 60,),
+                        SizedBox(width: MediaQuery.of(context).size.height * 0.04,),
                         SizedBox(
-                          width: 250,
+                          width: MediaQuery.of(context).size.height * 0.2,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.001),
                             child: TextFormField(
                               decoration: const InputDecoration(
                                   suffixIcon: Icon(Icons.search_outlined),
@@ -272,9 +272,9 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 25),
                       ),
                       (load)
-                          ? const SizedBox(
-                              height: 780,
-                              child: Center(
+                          ? SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: const Center(
                                 child: CircularProgressIndicator(),
                               ),
                             )
@@ -308,7 +308,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 20,
                                 ),
                       SizedBox(
-                        height: 707,
+                        height: MediaQuery.of(context).size.height * 0.614,
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount: dataFiltrada.length,
@@ -455,176 +455,175 @@ class _PartidaViewState extends State<_PartidaView> {
 
   @override
   Widget build(BuildContext context) {
-    final notifications =context.watch<NotificationsBloc>().state.notifications;
+    final notifications = context.watch<NotificationsBloc>().state.notifications;
     // print(notifications);
     return Container(
       color: const Color(0xFF318CE7),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 90),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.search_outlined),
-                    label: Text(
-                      'Buscar',
-                      style: TextStyle(color: Colors.white),
-                    )),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.10),
+            child: TextFormField(
+              decoration: const InputDecoration(
+              suffixIcon: Icon(Icons.search_outlined),
+              label: Text(
+                  'Buscar',
+                  style: TextStyle(color: Colors.white),
+                )
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                  color: Color(0xFFAFCDEA),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40))),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
-                    'PARTIDAS',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.none,
-                        fontSize: 25),
-                  ),
-                  (load)
-                      ? const SizedBox(
-                          height: 780,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : (widget.data.isEmpty)
-                          ? Column(
-                              children: [
-                                const Center(
-                                  child: Text(
-                                    'Vacio',
-                                    style: TextStyle(
-                                        color: Color(0xFF318CE7),
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.none,
-                                        fontSize: 40),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.replay_outlined))
-                              ],
-                            )
-                          : const SizedBox(
-                              height: 20,
-                            ),
-                  SizedBox(
-                    height: 707,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: widget.data.length,
-                      itemBuilder: (context, index) {
-                        if (widget.data[index]['estado'] ==
-                            widget.filtro[widget.currentIndex]) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: Material(
-                              child: ListTile(
-                                title: Text(
-                                  '${widget.data[index]["name"]}',
-                                  style: const TextStyle(
-                                      color: Colors.white,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                color: Color(0xFFAFCDEA),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40))),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  'PARTIDAS',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
+                      fontSize: 25),
+                ),
+                (load)
+                    ? SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.79,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : (widget.data.isEmpty)
+                        ? Column(
+                            children: [
+                              const Center(
+                                child: Text(
+                                  'Vacio',
+                                  style: TextStyle(
+                                      color: Color(0xFF318CE7),
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.none,
-                                      fontSize: 20),
+                                      fontSize: 40),
                                 ),
-                                leading: ClipOval(
-                                  child:
-                                      widget.data[index]['path_image'] == null
-                                          ? Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                color: const Color(0xFFD9D9D9),
-                                              ),
-                                              child: const Image(
-                                                  image: AssetImage(
-                                                      'assets/groupImg.png'),
-                                                  width: 40,
-                                                  height: 40),
-                                            )
-                                          : Image.network(
-                                              '${widget.data[index]['path_image']}',
-                                              fit: BoxFit.cover,
-                                            ),
-                                ),
-                                tileColor: const Color(0xFF318CE7),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${widget.data[index]['description']}',
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
-                                    Text(
-                                      'Cuota: ${widget.data[index]['cuota']}',
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
-                                    Text(
-                                      'Fecha de Inicio: ${widget.data[index]['start_date'].toString().substring(0, 10)}',
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                                trailing: const Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  color: Colors.black,
-                                ),
-                                onTap: () {
-                                  Provider.of<PartidaProvider>(context,
-                                          listen: false)
-                                      .changePartida(
-                                          newTitle: widget.data[index]['name'],
-                                          newId: widget.data[index]['id']
-                                              .toString(),
-                                          newEstado: widget.data[index]
-                                              ['estado'],
-                                          newCuota: int.parse(widget.data[index]
-                                                  ['cuota']
-                                              .toString()),
-                                          newPlayerTotal: int.parse(widget
-                                              .data[index]['number_of_players']
-                                              .toString()),
-                                          newPeriodo: widget.data[index]
-                                              ['period']['name']);
-                                  context.push('/partida');
-                                  // context.push('/push-details/${notifications[0].messageId}');
-                                },
                               ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.replay_outlined))
+                            ],
+                          )
+                        : const SizedBox(
+                            height: 20,
+                          ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: widget.data.length,
+                    itemBuilder: (context, index) {
+                      if (widget.data[index]['estado'] ==
+                          widget.filtro[widget.currentIndex]) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Material(
+                            child: ListTile(
+                              title: Text(
+                                '${widget.data[index]["name"]}',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none,
+                                    fontSize: 20),
+                              ),
+                              leading: ClipOval(
+                                child:
+                                    widget.data[index]['path_image'] == null
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              color: const Color(0xFFD9D9D9),
+                                            ),
+                                            child: const Image(
+                                                image: AssetImage(
+                                                    'assets/groupImg.png'),
+                                                width: 40,
+                                                height: 40),
+                                          )
+                                        : Image.network(
+                                            '${widget.data[index]['path_image']}',
+                                            fit: BoxFit.cover,
+                                          ),
+                              ),
+                              tileColor: const Color(0xFF318CE7),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${widget.data[index]['description']}',
+                                    style:
+                                        const TextStyle(color: Colors.white),
+                                  ),
+                                  Text(
+                                    'Cuota: ${widget.data[index]['cuota']}',
+                                    style:
+                                        const TextStyle(color: Colors.white),
+                                  ),
+                                  Text(
+                                    'Fecha de Inicio: ${widget.data[index]['start_date'].toString().substring(0, 10)}',
+                                    style:
+                                        const TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Colors.black,
+                              ),
+                              onTap: () {
+                                Provider.of<PartidaProvider>(context,
+                                        listen: false)
+                                    .changePartida(
+                                        newTitle: widget.data[index]['name'],
+                                        newId: widget.data[index]['id']
+                                            .toString(),
+                                        newEstado: widget.data[index]
+                                            ['estado'],
+                                        newCuota: int.parse(widget.data[index]
+                                                ['cuota']
+                                            .toString()),
+                                        newPlayerTotal: int.parse(widget
+                                            .data[index]['number_of_players']
+                                            .toString()),
+                                        newPeriodo: widget.data[index]
+                                            ['period']['name']);
+                                context.push('/partida');
+                                // context.push('/push-details/${notifications[0].messageId}');
+                              },
                             ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

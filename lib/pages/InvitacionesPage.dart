@@ -6,6 +6,7 @@ import 'package:pasanaku_app/api/apiServicio.dart';
 // import 'package:pasanaku_app/models/Invitaciones.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class InvitacionesPage extends StatefulWidget {
@@ -84,9 +85,7 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const Drawer(
-          backgroundColor: Color(0xFF666F88),
-        ),
+        drawer: const DrawerView(),
         appBar: AppBar(
           backgroundColor: const Color(0xFF318CE7),
           title: const Center(
@@ -169,7 +168,7 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
                         height: 20,
                       ),
                       SizedBox(
-                        height: 799,
+                        height: MediaQuery.of(context).size.height * 0.73,
                         child: (load)
                             ? const Center(
                                 child: CircularProgressIndicator(),

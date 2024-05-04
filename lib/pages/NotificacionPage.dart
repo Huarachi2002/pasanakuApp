@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/api/apiServicio.dart';
 // import 'package:pasanaku_app/models/Invitaciones.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class NotificacionPage extends StatefulWidget {
@@ -83,9 +84,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const Drawer(
-          backgroundColor: Color(0xFF666F88),
-        ),
+        drawer: const DrawerView(),
         appBar: AppBar(
           backgroundColor: const Color(0xFF318CE7),
           title: const Center(
@@ -111,151 +110,149 @@ class _NotificacionPageState extends State<NotificacionPage> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: const Color(0xFF318CE7),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: const Color(0xFFD9D9D9),
+        body: Container(
+          color: const Color(0xFF318CE7),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: const Color(0xFFD9D9D9),
+                      ),
+                      child: InkWell(
+                        child: const Icon(
+                          Icons.arrow_back_rounded,
+                          size: 50,
                         ),
-                        child: InkWell(
-                          child: const Icon(
-                            Icons.arrow_back_rounded,
-                            size: 50,
-                          ),
-                          onTap: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.push('/home');
-                          },
-                        )),
-                  ),
+                        onTap: () {
+                          if (context.canPop()) {
+                            context.pop();
+                            return;
+                          }
+                          context.push('/home');
+                        },
+                      )),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                      color: Color(0xFFAFCDEA),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40))),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Text(
-                        'NOTIFICACIONES',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontSize: 25),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 799,
-                        child: (load)
-                            ? const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : (data.isEmpty)
-                                ? Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          'Vacio',
-                                          style: TextStyle(
-                                              color: Color(0xFF318CE7),
-                                              fontWeight: FontWeight.bold,
-                                              decoration: TextDecoration.none,
-                                              fontSize: 40),
-                                        ),
-                                        IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                load = true;
-                                              });
-                                              reload();
-                                            },
-                                            style: ButtonStyle(
-                                                iconSize: MaterialStateProperty
-                                                    .all<double?>(40)),
-                                            icon: const Icon(
-                                                Icons.replay_outlined))
-                                      ],
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: data.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 5),
-                                        child: Material(
-                                          child: ListTile(
-                                            title: Text(
-                                              '${data[index]["title"]}',
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  fontSize: 20),
-                                            ),
-                                            leading: Container(
-                                                height: 50,
-                                                width: 50,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  color:
-                                                      const Color(0xFFD9D9D9),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.monetization_on_rounded,
-                                                  size: 40,
-                                                  color: Colors.black,
-                                                )),
-                                            tileColor: const Color(0xFF318CE7),
-                                            subtitle: Text(
-                                              '${data[index]['body']}',
-                                              style: const TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            trailing: const Icon(
-                                              Icons.arrow_forward_ios_rounded,
-                                              color: Colors.black,
-                                            ),
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                      );
-                                    },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                    color: Color(0xFFAFCDEA),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40))),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Text(
+                      'NOTIFICACIONES',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none,
+                          fontSize: 25),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.72,
+                      child: (load)
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : (data.isEmpty)
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Vacio',
+                                        style: TextStyle(
+                                            color: Color(0xFF318CE7),
+                                            fontWeight: FontWeight.bold,
+                                            decoration: TextDecoration.none,
+                                            fontSize: 40),
+                                      ),
+                                      IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              load = true;
+                                            });
+                                            reload();
+                                          },
+                                          style: ButtonStyle(
+                                              iconSize: MaterialStateProperty
+                                                  .all<double?>(40)),
+                                          icon: const Icon(
+                                              Icons.replay_outlined))
+                                    ],
                                   ),
-                      ),
-                    ],
-                  ),
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: data.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Material(
+                                        child: ListTile(
+                                          title: Text(
+                                            '${data[index]["title"]}',
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                decoration:
+                                                    TextDecoration.none,
+                                                fontSize: 20),
+                                          ),
+                                          leading: Container(
+                                              height: 50,
+                                              width: 50,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                                color:
+                                                    const Color(0xFFD9D9D9),
+                                              ),
+                                              child: const Icon(
+                                                Icons.monetization_on_rounded,
+                                                size: 40,
+                                                color: Colors.black,
+                                              )),
+                                          tileColor: const Color(0xFF318CE7),
+                                          subtitle: Text(
+                                            '${data[index]['body']}',
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                          trailing: const Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            color: Colors.black,
+                                          ),
+                                          onTap: () {},
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ));
   }

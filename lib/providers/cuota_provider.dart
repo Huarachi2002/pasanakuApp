@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 class CuotaProvider with ChangeNotifier{
   String id;
-  int cuota;
-  int discount;
-  int penaltyFee;
-  int totalAmount;
+  String cuota;
+  String discount;
+  String penaltyFee;
+  String totalAmount;
   bool state;
   String fecha;
   String destination_participant_id;
 
   CuotaProvider({
     this.id = '',
-    this.cuota = 0,
-    this.discount = 0,
-    this.penaltyFee = 0,
-    this.totalAmount = 0,
+    this.cuota = '',
+    this.discount = '',
+    this.penaltyFee = '',
+    this.totalAmount = '',
     this.state = false,
     this.fecha = '',
     this.destination_participant_id = ''
@@ -23,10 +23,10 @@ class CuotaProvider with ChangeNotifier{
 
   void changeCuota({
     String? newId,
-    int? newCuota,
-    int? newDiscount,
-    int? newPenaltyFee,
-    int? newTotalAmount,
+    String? newCuota,
+    String? newDiscount,
+    String? newPenaltyFee,
+    String? newTotalAmount,
     bool? newState,
     String? newFecha,
     String? newDestination_participant_id

@@ -135,170 +135,172 @@ class _InvitacionPageState extends State<InvitacionPage> {
                 color: Color(0xFFAFCDEA),
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
               ),
-              child: SizedBox(
-                height: 845,
-                width: double.infinity,
+              child: SingleChildScrollView(
                 child: SizedBox(
-                  child: Column(
-                    children: [     
-                      const Text(
-                        'INVITACION', 
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none,
-                          fontSize: 35
+                  height: MediaQuery.of(context).size.height * 0.84,
+                  width: double.infinity,
+                  child: SizedBox(
+                    child: Column(
+                      children: [     
+                        const Text(
+                          'INVITACION', 
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                            fontSize: 35
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 5,),
-                      
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Container(
-                          width: 500,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: const Color(0xFF318CE7)
-                          ),
-                          child:  Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Adminitrador', 
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<InvitacionProvider>().nameAdmin, 
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Capacidad', 
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<InvitacionProvider>().capacidad, 
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Cuota', 
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<InvitacionProvider>().cuota, 
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Fecha de Inicio', 
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<InvitacionProvider>().fechaInit.substring(0,10), 
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                const SizedBox(height: 50,),
-                                const Text(
-                                  'Periodo', 
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<InvitacionProvider>().periodo, 
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    decoration: TextDecoration.none
-                                  ),
-                                ),
-                              ],
+                        const SizedBox(height: 5,),
+                        
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Container(
+                            width: 500,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: const Color(0xFF318CE7)
                             ),
-                          ),
-                        )
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              confirmInvit(context);
-                              context.push('/home');
-                            }, 
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),
-                            ),
-                            child: const Text(
-                              'ACEPTAR INVITACIÓN',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
+                            child:  Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Adminitrador', 
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  Text(
+                                    context.watch<InvitacionProvider>().nameAdmin, 
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  const SizedBox(height: 50,),
+                                  const Text(
+                                    'Capacidad', 
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w800,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  Text(
+                                    context.watch<InvitacionProvider>().capacidad, 
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  const SizedBox(height: 50,),
+                                  const Text(
+                                    'Cuota', 
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w800,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  Text(
+                                    context.watch<InvitacionProvider>().cuota, 
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  const SizedBox(height: 50,),
+                                  const Text(
+                                    'Fecha de Inicio', 
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w800,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  Text(
+                                    context.watch<InvitacionProvider>().fechaInit.substring(0,10), 
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  const SizedBox(height: 50,),
+                                  const Text(
+                                    'Periodo', 
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w800,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                  Text(
+                                    context.watch<InvitacionProvider>().periodo, 
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none
+                                    ),
+                                  ),
+                                ],
                               ),
-                            )
-                          ),
-                          // const SizedBox(width: 0,),
-                          ElevatedButton(
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
                             ),
-                            onPressed:(){
-                              denegInvit(context);
-                              context.pop();
-                            }, 
-                            child: const Text(
-                              'RECHAZAR INVITACIÓN',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
-                              ),
-                            )
                           )
-                         
-                        ],
-                      )
-                    ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                confirmInvit(context);
+                                context.push('/home');
+                              }, 
+                              style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll<Color>(Color(0xFF318CE7)),
+                              ),
+                              child: const Text(
+                                'ACEPTAR INVITACIÓN',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              )
+                            ),
+                            // const SizedBox(width: 0,),
+                            ElevatedButton(
+                              style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+                              ),
+                              onPressed:(){
+                                denegInvit(context);
+                                context.pop();
+                              }, 
+                              child: const Text(
+                                'RECHAZAR INVITACIÓN',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              )
+                            )
+                           
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

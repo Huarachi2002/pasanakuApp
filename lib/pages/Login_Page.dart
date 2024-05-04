@@ -89,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     // print('token: ${bloc.token}');
     return SingleChildScrollView(
       child: Container(
+        height: MediaQuery.of(context).size.height,
         color: const Color(0xff6AA9E9),
         child: Form(
           key: _formKey,
@@ -241,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     )
                   ),
-                  const SizedBox(width: 70,),
+                  SizedBox(width: MediaQuery.of(context).size.height * 0.1,),
                   ElevatedButton(
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
@@ -258,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-              const SizedBox(height: 180,),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1,),
               const Text(
                 'Al continuar, declaras tu conformidad con nuestras',
                 style: TextStyle(
