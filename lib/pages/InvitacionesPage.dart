@@ -104,16 +104,17 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
                   width: 15,
                 ),
                 Image(
-                    image: AssetImage('assets/logo.png'),
-                    width: 50,
-                    height: 50),
+                  image: AssetImage('assets/logo.png'),
+                  width: 50,
+                  height: 50
+                ),
               ],
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: const Color(0xFF318CE7),
+        body: Container(
+          color: const Color(0xFF318CE7),
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
@@ -121,25 +122,26 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: const Color(0xFFD9D9D9),
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: const Color(0xFFD9D9D9),
+                      ),
+                      child: InkWell(
+                        child: const Icon(
+                          Icons.arrow_back_rounded,
+                          size: 50,
                         ),
-                        child: InkWell(
-                          child: const Icon(
-                            Icons.arrow_back_rounded,
-                            size: 50,
-                          ),
-                          onTap: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.push('/home');
-                          },
-                        )),
+                        onTap: () {
+                          if (context.canPop()) {
+                            context.pop();
+                            return;
+                          }
+                          context.push('/home');
+                        },
+                      )
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -168,7 +170,7 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
                         height: 20,
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.73,
+                        height: MediaQuery.of(context).size.height * 0.8,
                         child: (load)
                             ? const Center(
                                 child: CircularProgressIndicator(),

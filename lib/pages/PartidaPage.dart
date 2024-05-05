@@ -168,358 +168,359 @@ class _PartidaPageState extends State<PartidaPage> {
       ),
       body: Container(
         color: const Color(0xFF318CE7),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: const Color(0xFFD9D9D9),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: const Color(0xFFD9D9D9),
+                        ),
+                        child: InkWell(
+                          child: const Icon(Icons.arrow_back_rounded,size: 50,),
+                          onTap: () {
+                            context.pop();
+                          },
+                        )
                       ),
-                      child: InkWell(
-                        child: const Icon(Icons.arrow_back_rounded,size: 50,),
-                        onTap: () {
-                          context.pop();
-                        },
-                      )
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: (){
-                            setState(() {
-                              load = true;
-                            });
-                            reload();
-                          },
-                          style: ButtonStyle(
-                            iconSize: MaterialStateProperty.all<double?>(30)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: (){
+                              setState(() {
+                                load = true;
+                              });
+                              reload();
+                            },
+                            style: ButtonStyle(
+                              iconSize: MaterialStateProperty.all<double?>(30)
+                            ),
+                            icon: const Icon(Icons.replay_outlined)
                           ),
-                          icon: const Icon(Icons.replay_outlined)
-                        ),
-                        ElevatedButton(onPressed: 
-                        (statePuja)
-                        ?() {
-                          context.push('/puja');
-                        } 
-                        : null
-                        , child: 
-                        (statePuja)
-                        ? const Text('Ver Puja')
-                        : const Text('Puja no disponible')
-                        ),
-                      ],
-                    )
+                          ElevatedButton(onPressed: 
+                          (statePuja)
+                          ?() {
+                            context.push('/puja');
+                          } 
+                          : null
+                          , child: 
+                          (statePuja)
+                          ? const Text('Ver Puja')
+                          : const Text('Puja no disponible')
+                          ),
+                        ],
+                      )
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10,),
+              SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFAFCDEA),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
                   ),
-                )
-              ],
-            ),
-            const SizedBox(height: 10,),
-            SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFAFCDEA),
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
-                ),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.787,
-                  child: 
-                  (load)
-                  ? const Center(child: CircularProgressIndicator(),)
-                  :SingleChildScrollView(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
                     child: 
-                    Column(
-                      children: [     
-                        Text(
-                          partidaInfo.title, 
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontSize: 25
-                          ),
-                        ),
-                        const SizedBox(height: 5,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              partidaInfo.estado, 
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                decoration: TextDecoration.none,
-                                fontSize: 18
-                              ),
-                            ),
-                            const SizedBox(width: 6,),
-                            Container(
-                              height: 20,
-                              width: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: color[partidaInfo.estado]
-                              ),
-                            ),
-                            const SizedBox(width: 50,),
-                            Text(
-                              'Periodo:${partidaInfo.periodo}', 
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                decoration: TextDecoration.none,
-                                fontSize: 18
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Participantes ${data.length}/${partidaInfo.playerTotal}', 
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.none,
-                                fontSize: 22
-                              ),
+                    (load)
+                    ? const Center(child: CircularProgressIndicator(),)
+                    :SingleChildScrollView(
+                      child: 
+                      Column(
+                        children: [     
+                          Text(
+                            partidaInfo.title, 
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none,
+                              fontSize: 25
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.45,
-                            // height: 399,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)
+                          const SizedBox(height: 5,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                partidaInfo.estado, 
+                                style: const TextStyle(
+                                  color: Colors.black54,
+                                  decoration: TextDecoration.none,
+                                  fontSize: 18
+                                ),
                               ),
-                              child: Column(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        'Administrador', 
-                                        style: TextStyle(
-                                          color: Color(0xFF318CE7),
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.none,
-                                          fontSize: 19
+                              const SizedBox(width: 6,),
+                              Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: color[partidaInfo.estado]
+                                ),
+                              ),
+                              const SizedBox(width: 50,),
+                              Text(
+                                'Periodo:${partidaInfo.periodo}', 
+                                style: const TextStyle(
+                                  color: Colors.black54,
+                                  decoration: TextDecoration.none,
+                                  fontSize: 18
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Participantes ${data.length}/${partidaInfo.playerTotal}', 
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.none,
+                                  fontSize: 22
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.45,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Administrador', 
+                                          style: TextStyle(
+                                            color: Color(0xFF318CE7),
+                                            fontWeight: FontWeight.bold,
+                                            decoration: TextDecoration.none,
+                                            fontSize: 19
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 50,
-                                    child: Card(
-                                      color: const Color(0xFF318CE7),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            (data[0]['player']['id']==user.id) 
-                                            ?'${data[0]['player']['name']} (Yo)'
-                                            :'${data[0]['player']['name']}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            // fontWeight: FontWeight.bold,
-                                            decoration: TextDecoration.none,
-                                            fontSize: 20
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 50,
+                                      child: Card(
+                                        color: const Color(0xFF318CE7),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              (data[0]['player']['id']==user.id) 
+                                              ?'${data[0]['player']['name']} (Yo)'
+                                              :'${data[0]['player']['name']}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              // fontWeight: FontWeight.bold,
+                                              decoration: TextDecoration.none,
+                                              fontSize: 20
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const Divider(
-                                    endIndent: 10,
-                                    indent: 10,
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        'Jugadores', 
-                                        style: TextStyle(
-                                          color: Color(0xFF318CE7),
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.none,
-                                          fontSize: 19
+                                    const Divider(
+                                      endIndent: 10,
+                                      indent: 10,
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Jugadores', 
+                                          style: TextStyle(
+                                            color: Color(0xFF318CE7),
+                                            fontWeight: FontWeight.bold,
+                                            decoration: TextDecoration.none,
+                                            fontSize: 19
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.25,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: data.length-1,
-                                      itemBuilder: (context, index) {
-                                        return SizedBox(
-                                          width: double.infinity,
-                                          height: 50,
-                                          child: Card(
-                                            color: const Color(0xFF318CE7),
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                                              child: Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  // '${index+1}. ${data[index+1]['player']['name']}',
-                                                  (user.id == data[index+1]['player_id'])
-                                                  ? '${index+1}. ${data[index+1]['player']['name']} (Yo)' 
-                                                  : '${index+1}. ${data[index+1]['player']['name']}',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  // fontWeight: FontWeight.bold,
-                                                  decoration: TextDecoration.none,
-                                                  fontSize: 20
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.25,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: data.length-1,
+                                        itemBuilder: (context, index) {
+                                          return SizedBox(
+                                            width: double.infinity,
+                                            height: 50,
+                                            child: Card(
+                                              color: const Color(0xFF318CE7),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text(
+                                                    // '${index+1}. ${data[index+1]['player']['name']}',
+                                                    (user.id == data[index+1]['player_id'])
+                                                    ? '${index+1}. ${data[index+1]['player']['name']} (Yo)' 
+                                                    : '${index+1}. ${data[index+1]['player']['name']}',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    // fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.none,
+                                                    fontSize: 20
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              )
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Cuotas Pendientes', 
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.none,
-                                fontSize: 22
+                                  ],
+                                )
                               ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.30,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Cuotas Pendientes', 
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.none,
+                                  fontSize: 22
+                                ),
                               ),
-                              child: 
-                              (dataCuota.isEmpty)
-                              ? const Center(
-                                  child: Text(
-                                    'Vacio', 
-                                    style: TextStyle(
-                                      color: Color(0xFF318CE7),
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.none,
-                                      fontSize: 40
-                                    ),
-                                  ),)
-                              :
-                              ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: dataCuota.length,
-                                itemBuilder: (context, index) {
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    height: MediaQuery.of(context).size.height * 0.07,
-                                    child: Card(
-                                      color: const Color(0xFF318CE7),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                              'Ronda ${dataCuota[index]['number']['number']} no pagada', 
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                decoration: TextDecoration.none,
-                                                fontSize: 16
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.30,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: 
+                                (dataCuota.isEmpty)
+                                ? const Center(
+                                    child: Text(
+                                      'Vacio', 
+                                      style: TextStyle(
+                                        color: Color(0xFF318CE7),
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none,
+                                        fontSize: 40
+                                      ),
+                                    ),)
+                                :
+                                ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: dataCuota.length,
+                                  itemBuilder: (context, index) {
+                                    return SizedBox(
+                                      width: double.infinity,
+                                      height: MediaQuery.of(context).size.height * 0.07,
+                                      child: Card(
+                                        color: const Color(0xFF318CE7),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                'Ronda ${dataCuota[index]['number']['number']} no pagada', 
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  decoration: TextDecoration.none,
+                                                  fontSize: 16
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                                            child: ElevatedButton.icon(
-                                              style: ElevatedButton.styleFrom(
-                                                minimumSize: Size(MediaQuery.of(context).size.width * 0.1, MediaQuery.of(context).size.height * 0.001),
-                                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Espaciado interno
-                                                textStyle: TextStyle(fontSize: 12),   
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: ElevatedButton.icon(
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize: Size(MediaQuery.of(context).size.width * 0.1, MediaQuery.of(context).size.height * 0.001),
+                                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Espaciado interno
+                                                  textStyle: const TextStyle(fontSize: 12),   
+                                                ),
+                                                onPressed: (){
+                                                  // print('dataCuota[index]: ${dataCuota[index]}');
+                                                  Provider.of<CuotaProvider>(context,listen: false).changeCuota(
+                                                    newId: dataCuota[index]['id'].toString(),
+                                                    newCuota: dataCuota[index]['cuota'].toString(),
+                                                    newDiscount: dataCuota[index]['discount'].toString(),
+                                                    newFecha: dataCuota[index]['number']['transfer_end_date'],
+                                                    newPenaltyFee: dataCuota[index]['penalty_fee'].toString(),
+                                                    newState: dataCuota[index]['state'],
+                                                    newTotalAmount: dataCuota[index]['total_amount'].toString(),
+                                                    newDestination_participant_id: dataCuota[index]['destination_participant_id']
+                                                  );
+                                                  context.push('/qr-details/1');
+                                                }, 
+                                                icon: const Icon(Icons.qr_code_2), 
+                                                label: const Text('Ver Qr')
                                               ),
-                                              onPressed: (){
-                                                // print('dataCuota[index]: ${dataCuota[index]}');
-                                                Provider.of<CuotaProvider>(context,listen: false).changeCuota(
-                                                  newId: dataCuota[index]['id'].toString(),
-                                                  newCuota: dataCuota[index]['cuota'].toString(),
-                                                  newDiscount: dataCuota[index]['discount'].toString(),
-                                                  newFecha: dataCuota[index]['number']['transfer_end_date'],
-                                                  newPenaltyFee: dataCuota[index]['penalty_fee'].toString(),
-                                                  newState: dataCuota[index]['state'],
-                                                  newTotalAmount: dataCuota[index]['total_amount'].toString(),
-                                                  newDestination_participant_id: dataCuota[index]['destination_participant_id']
-                                                );
-                                                context.push('/qr-details/1');
-                                              }, 
-                                              icon: const Icon(Icons.qr_code_2), 
-                                              label: const Text('Ver Qr')
-                                            ),
-                                          )
-                                        ],
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       )
     );

@@ -113,9 +113,9 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final token = context.watch<NotificationsBloc>().state.token;
-    print('token: $token');
+    // print('token: $token');
     return Container(
-      height: MediaQuery.of(context).size.height,
+      // height: MediaQuery.of(context).size.height,
       color: const Color(0xff6AA9E9),
       child: SingleChildScrollView(
         child: Form(

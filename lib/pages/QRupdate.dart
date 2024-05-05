@@ -147,32 +147,38 @@ class _QRupdateState extends State<QRupdate> {
                                 child: Image.file(_selectedImage!),
                               ),
                           )
-                          : Container(),
+                          : Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: SizedBox(
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.height * 0.40,
+                              ),
+                          ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: 
                           (_selectedImage != null)
                           ?
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: Size(MediaQuery.of(context).size.width * 0.1, MediaQuery.of(context).size.height * 0.001),
-                                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Espaciado interno
-                                    textStyle: TextStyle(fontSize: 12),   
+                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Espaciado interno
+                                    textStyle: const TextStyle(fontSize: 14,),
                                   ),
                                   onPressed: (){
                                     showImageGallery();
                                   }, 
-                                  icon: const Icon(Icons.image,size: 12,), 
+                                  icon: const Icon(Icons.image,size: 14,), 
                                   label: const Text('Seleccionar Imagen')
                                 ),
                                 ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: Size(MediaQuery.of(context).size.width * 0.1, MediaQuery.of(context).size.height * 0.001),
-                                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Espaciado interno
-                                    textStyle: TextStyle(fontSize: 12),   
+                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Espaciado interno
+                                    textStyle: const TextStyle(fontSize: 14),   
                                   ),
                                   onPressed: (){
                                     updateQr();
@@ -193,7 +199,7 @@ class _QRupdateState extends State<QRupdate> {
                                       )
                                     );
                                   }, 
-                                  icon: const Icon(Icons.upload, size: 12,), 
+                                  icon: const Icon(Icons.upload, size: 14,), 
                                   label: const Text('Actualizar QR')
                                 ),
                               ],

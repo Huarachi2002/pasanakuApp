@@ -87,10 +87,10 @@ class _LoginPageState extends State<LoginPage> {
     final bloc = context.watch<NotificationsBloc>().state;
     // print('status: ${bloc.status}');
     // print('token: ${bloc.token}');
-    return SingleChildScrollView(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        color: const Color(0xff6AA9E9),
+    return Container(
+      // height: MediaQuery.of(context).size.height,
+      color: const Color(0xff6AA9E9),
+      child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(

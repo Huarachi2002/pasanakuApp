@@ -127,221 +127,228 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
       ),
       body: Container(
         color: const Color(0xFF318CE7),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: const Color(0xFFD9D9D9),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color(0xFFD9D9D9),
+                    ),
+                    child: InkWell(
+                      child: const Icon(Icons.arrow_back_rounded,size: 50,),
+                      onTap: () {
+                        context.push('/home');
+                      },
+                    )
                   ),
-                  child: InkWell(
-                    child: const Icon(Icons.arrow_back_rounded,size: 50,),
-                    onTap: () {
-                      context.push('/home');
-                    },
-                  )
                 ),
               ),
-            ),
-            const SizedBox(height: 10,),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: const BoxDecoration(
-                color: Color(0xFFAFCDEA),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
-              ),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.787,
-                width: double.infinity,
+              const SizedBox(height: 10,),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFAFCDEA),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
+                ),
                 child: SizedBox(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const Text(
-                          'QR Detalle',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontSize: 35
-                          ),
-                        ),
-                        const SizedBox(height: 5,),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Container(
-                            width: MediaQuery.of(context).size.height * 0.40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: const Color(0xFF318CE7)
+                  height: MediaQuery.of(context).size.height * 0.85,
+                  width: double.infinity,
+                  child: SizedBox(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const Text(
+                            'QR Detalle',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none,
+                              fontSize: 35
                             ),
-                            child:  Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  (load)
-                                  ? const Center(child: CircularProgressIndicator())
-                                  :
-                                  Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-                                      child: SizedBox(
-                                        child: (pathQr != '') ?Image.network(url) : Image.asset('assets/errorImage.jpg'),
-                                        width: 200,  
-                                        height: 200,
+                          ),
+                          const SizedBox(height: 5,),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Container(
+                              width: MediaQuery.of(context).size.height * 0.40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: const Color(0xFF318CE7)
+                              ),
+                              child:  Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    (load)
+                                    ? const Center(
+                                        child: SizedBox(
+                                          width: 200,
+                                          height: 200,
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      )
+                                    :
+                                    Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+                                        child: SizedBox(
+                                          child: (pathQr != '') ? Image.network(url) : Image.asset('assets/errorImage.jpg'),
+                                          width: 200,  
+                                          height: 200,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const Text(
-                                    'Fecha limite del pago',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.none
+                                    const Text(
+                                      'Fecha limite del pago',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    Text(
+                                      'Fecha: ${cuota.fecha.substring(0,10)} \nHora: ${cuota.fecha.substring(11,19)}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
+                                    const Text(
+                                      'Monto de cuota',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w800,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    Text(
+                                      // message.data!['cuota'],
+                                      '${cuota.cuota}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
+                                    const Text(
+                                      'Penalizacion',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w800,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    Text(
+                                      // message.data!['penalty_fee'],
+                                      '${cuota.penaltyFee}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
+                                    const Text(
+                                      'Monto Total',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w800,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                    Text(
+                                      // message.data!['total_amount'],
+                                      '${cuota.totalAmount}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        decoration: TextDecoration.none
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ),
+                          Center(
+                            child:
+                            (_progress != null)
+                            ? const CircularProgressIndicator()
+                            :
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.01),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: 
+                                    (load)
+                                    ? null
+                                    :
+                                      () {
+                                      FileDownloader.downloadFile(
+                                        url: url,
+                                        onProgress: (fileName, progress) {
+                                          setState(() {
+                                            _progress = progress;
+                                          });
+                                        },
+                                        onDownloadCompleted: (path) {
+                                          print('path $path');
+                                          setState(() {
+                                            _progress = null;
+                                          });
+                                        },
+                                        onDownloadError: (errorMessage) {
+                                          print('DOWNLOAD ERROR: $errorMessage');
+                                        },
+                                        notificationType: NotificationType.all,
+                                        onDownloadRequestIdReceived: (downloadId) {
+                                          print('downloadId: $downloadId');
+                                        },
+                                      );
+                                  
+                                    },
+                                    icon: const Icon(Icons.download),
+                                    label: const Text(
+                                      'DESCARGAR QR',
                                     ),
                                   ),
-                                  Text(
-                                    // message!.data!['data'],
-                                    'Fecha: ${cuota.fecha.substring(0,10)} \nHora: ${cuota.fecha.substring(11,19)}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
-                                  const Text(
-                                    'Monto de cuota',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w800,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
-                                  Text(
-                                    // message.data!['cuota'],
-                                    '${cuota.cuota}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
-                                  const Text(
-                                    'Penalizacion',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w800,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
-                                  Text(
-                                    // message.data!['penalty_fee'],
-                                    '${cuota.penaltyFee}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.01,),
-                                  const Text(
-                                    'Monto Total',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w800,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
-                                  Text(
-                                    // message.data!['total_amount'],
-                                    '${cuota.totalAmount}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      decoration: TextDecoration.none
-                                    ),
-                                  ),
+                                  ElevatedButton.icon(
+                                    onPressed: (){
+                                      pagar();
+                                      context.pop();
+                                    }, 
+                                    icon: const Icon(Icons.monetization_on_outlined), 
+                                    label: const Text('Pagar')
+                                  )
                                 ],
                               ),
                             ),
-                          )
-                        ),
-                        Center(
-                          child:
-                          (_progress != null)
-                          ? const CircularProgressIndicator()
-                          :
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.01),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton.icon(
-                                  onPressed: 
-                                  (load)
-                                  ? null
-                                  :
-                                    () {
-                                    FileDownloader.downloadFile(
-                                      url: url,
-                                      onProgress: (fileName, progress) {
-                                        setState(() {
-                                          _progress = progress;
-                                        });
-                                      },
-                                      onDownloadCompleted: (path) {
-                                        print('path $path');
-                                        setState(() {
-                                          _progress = null;
-                                        });
-                                      },
-                                      onDownloadError: (errorMessage) {
-                                        print('DOWNLOAD ERROR: $errorMessage');
-                                      },
-                                      notificationType: NotificationType.all,
-                                      onDownloadRequestIdReceived: (downloadId) {
-                                        print('downloadId: $downloadId');
-                                      },
-                                    );
-                                
-                                  },
-                                  icon: const Icon(Icons.download),
-                                  label: const Text(
-                                    'DESCARGAR QR',
-                                  ),
-                                ),
-                                ElevatedButton.icon(
-                                  onPressed: (){
-                                    pagar();
-                                    context.pop();
-                                  }, 
-                                  icon: const Icon(Icons.monetization_on_outlined), 
-                                  label: const Text('Pagar')
-                                )
-                              ],
-                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       )
     );
