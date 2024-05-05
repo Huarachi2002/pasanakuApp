@@ -32,9 +32,9 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
     try { 
       final cuota = Provider.of<CuotaProvider>(context,listen: false);
       final response = await dio.get('/player/${cuota.destination_participant_id}');
-      print('dataDestination: ${response.data['data']}');
+      // print('dataDestination: ${response.data['data']}');
       pathQr = response.data['data']['path_qr'].toString();
-      print('Pathqr: $pathQr');
+      // print('Pathqr: $pathQr');
     } on DioException catch (e) {
       if (e.response != null) {
         print('data: ${e.response!.data}');
@@ -51,6 +51,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
   Future<void> pagar()async{
     try {
       final cuota = Provider.of<CuotaProvider>(context,listen: false);
+      if(cuota.id == '0') return;
       await dio.put('/transfers/${cuota.id}');
     } on DioException catch (e) {
       if (e.response != null) {
@@ -91,11 +92,10 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
     if(widget.pushMessageId != 1){
       message = context.watch<NotificationsBloc>().getMessageById(widget.pushMessageId);
     }
-    final user = Provider.of<UserProvider>(context,listen: false);
     final cuota = Provider.of<CuotaProvider>(context, listen: false);
-    print('userID: ${user.id} , pathQr: $pathQr');
+    // print('userID: ${user.id} , pathQr: $pathQr');
     String url = 'http://www.ficct.uagrm.edu.bo:3001/uploads/player/${cuota.destination_participant_id}/$pathQr';
-    print(url);
+    // print(url);
     return Scaffold(
       drawer: const DrawerView(),
       appBar: AppBar(
@@ -144,7 +144,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.push('/home');
+                        context.pop();
                       },
                     )
                   ),
@@ -158,7 +158,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
                 ),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.85,
+                  height: MediaQuery.of(context).size.height * 0.9,
                   width: double.infinity,
                   child: SizedBox(
                     child: SingleChildScrollView(
@@ -177,7 +177,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: Container(
-                              width: MediaQuery.of(context).size.height * 0.40,
+                              width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
                                 color: const Color(0xFF318CE7)
@@ -210,7 +210,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                       'Fecha limite del pago',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 30,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.none
                                       ),
@@ -219,7 +219,7 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                       'Fecha: ${cuota.fecha.substring(0,10)} \nHora: ${cuota.fecha.substring(11,19)}',
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20,
+                                        fontSize: 14,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
@@ -228,17 +228,17 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                       'Monto de cuota',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 30,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w800,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
                                     Text(
                                       // message.data!['cuota'],
-                                      '${cuota.cuota}',
+                                      cuota.cuota,
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20,
+                                        fontSize: 14,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
@@ -247,17 +247,17 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                       'Penalizacion',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 30,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w800,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
                                     Text(
                                       // message.data!['penalty_fee'],
-                                      '${cuota.penaltyFee}',
+                                      cuota.penaltyFee,
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20,
+                                        fontSize: 14,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
@@ -266,17 +266,17 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                       'Monto Total',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 30,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.w800,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
                                     Text(
                                       // message.data!['total_amount'],
-                                      '${cuota.totalAmount}',
+                                      cuota.totalAmount,
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20,
+                                        fontSize: 14,
                                         decoration: TextDecoration.none
                                       ),
                                     ),
