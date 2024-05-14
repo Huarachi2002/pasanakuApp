@@ -98,29 +98,33 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 50,
               ),
-              const Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Image(
-                    image: AssetImage('assets/Bandera_Bolivia.png'),
-                    width: 70,
-                    height: 50,
-                  ), 
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Text(
-                    'PASANAKU', 
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none,
-                      fontSize: 30
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Image(
+                      image: AssetImage('assets/Bandera_Bolivia.png'),
+                      width: 70,
+                      height: 50,
+                    ), 
+                    const Text(
+                      'PASANAKU', 
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                        fontSize: 30
+                      ),
                     ),
-                  )
-                ],
+                    IconButton(
+                      onPressed: (){
+                        context.read<NotificationsBloc>().requestPermission();
+                      }, 
+                      icon: const Icon(Icons.settings)
+                    )
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10,
