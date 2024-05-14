@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class InvitacionPage extends StatefulWidget {
@@ -74,10 +75,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(
-        backgroundColor: Color(0xFF666F88),
-        
-      ),
+      drawer: const DrawerView(),
       appBar: AppBar(
         backgroundColor: const Color(0xFF318CE7),
         title: const Center(
@@ -124,7 +122,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.push('/home');
+                        context.go('/invitations');
                       },
                     )
                   ),
@@ -139,7 +137,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40))
                   ),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.85,
                     width: double.infinity,
                     child: SizedBox(
                       child: Column(
@@ -273,7 +271,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                 ),
                                 onPressed: () {
                                   confirmInvit(context);
-                                  context.push('/home');
+                                  context.go('/home');
                                 }, 
                                 child: const Text(
                                   'ACEPTAR INVITACIÓN',
@@ -293,7 +291,7 @@ class _InvitacionPageState extends State<InvitacionPage> {
                                 ),
                                 onPressed:(){
                                   denegInvit(context);
-                                  context.pop();
+                                  context.go('/invitations');
                                 }, 
                                 child: const Text(
                                   'RECHAZAR INVITACIÓN',

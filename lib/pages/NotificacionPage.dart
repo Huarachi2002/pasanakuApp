@@ -134,11 +134,7 @@ class _NotificacionPageState extends State<NotificacionPage> {
                             size: 50,
                           ),
                           onTap: () {
-                            if (context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.push('/home');
+                            context.go('/home');
                           },
                         )),
                   ),

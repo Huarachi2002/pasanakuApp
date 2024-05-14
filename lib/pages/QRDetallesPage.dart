@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/domain/entities/push_message.dart';
 import 'package:pasanaku_app/providers/cuota_provider.dart';
-import 'package:pasanaku_app/providers/user_provider.dart';
+import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
@@ -144,7 +144,12 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.pop();
+                        final partida = Provider.of<PartidaProvider>(context,listen: false).id;
+                        if(partida == ''){
+                          context.go('/home');
+                        }else{
+                          context.go('/partida');
+                        }
                       },
                     )
                   ),
@@ -332,7 +337,12 @@ class _QRDetallesPageState extends State<QRDetallesPage> {
                                   ElevatedButton.icon(
                                     onPressed: (){
                                       pagar();
-                                      context.pop();
+                                      final partida = Provider.of<PartidaProvider>(context,listen: false).id;
+                                      if(partida == ''){
+                                        context.go('/home');
+                                      }else{
+                                        context.go('/partida');
+                                      }
                                     }, 
                                     icon: const Icon(Icons.monetization_on_outlined), 
                                     label: const Text('Pagar')

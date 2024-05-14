@@ -7,11 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:pasanaku_app/api/apiServicio.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
 import 'package:pasanaku_app/providers/user_provider.dart';
-import 'package:pasanaku_app/services/bloc/notifications_bloc.dart';
 import 'package:pasanaku_app/widgets/drawer.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
+
   static const name = 'home-screen';
   const HomePage({super.key});
 
@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   int currentIndex = 0;
   bool invitacion = false;
   bool notificacion = false;
@@ -75,6 +76,7 @@ class _HomePageState extends State<HomePage> {
         '/game/playerByPk/$playerId',
       );
       data = response.data['data'];
+      // print(data);
     } on DioException catch (e) {
       if (e.response != null) {
         print('data: ${e.response!.data}');
@@ -96,7 +98,7 @@ class _HomePageState extends State<HomePage> {
 
   void logout() {
     Provider.of<UserProvider>(context, listen: false).deletedUser();
-    context.push('/login');
+    context.go('/login');
   }
 
   @override
@@ -104,6 +106,15 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     reload();
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) { 
+      if(mounted){
+        setState(() {
+          getPartidas();
+          getInvitaciones();
+          getNotificaciones();
+        });
+      }
+    });
   }
 
   void reload() {
@@ -218,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(width: 20,),
                         IconButton(
                           onPressed: () {
-                            context.push('/invitations');
+                            context.go('/invitations');
                             invitacion = false;
                           },
                           icon: (invitacion)
@@ -233,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                                   size: 30,
                                 )),
                         IconButton(onPressed: () {
-                            context.push('/notificacion');
+                            context.go('/notificacion');
                             notificacion = false;
                           }, 
                           icon: 
@@ -392,7 +403,7 @@ class _HomePageState extends State<HomePage> {
                                                         .toString()),
                                                 newPeriodo: dataFiltrada[index]
                                                     ['period']['name']);
-                                        context.push('/partida');
+                                        context.go('/partida');
                                         // context.push('/push-details/${notifications[0].messageId}');
                                       },
                                     ),
@@ -414,216 +425,3 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 }
-
-// class _PartidaView extends StatefulWidget {
-//   const _PartidaView({
-//     required this.filtro,
-//     required this.currentIndex,
-//     required this.data,
-//   });
-//   final List<String> filtro;
-//   final int currentIndex;
-//   final List<dynamic> data;
-
-//   @override
-//   State<_PartidaView> createState() => _PartidaViewState();
-// }
-
-// class _PartidaViewState extends State<_PartidaView> {
-//   bool load = true;
-//   String id = '';
-//   late Timer _timer;
-
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     _timer = Timer(const Duration(seconds: 2), () {
-//       setState(() {
-//         load = !load;
-//       });
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     // TODO: implement dispose
-//     super.dispose();
-//     _timer.cancel();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final notifications = context.watch<NotificationsBloc>().state.notifications;
-//     // print(notifications);
-//     return Container(
-//       color: const Color(0xFF318CE7),
-//       child: Column(
-//         children: [
-//           Padding(
-//             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.10),
-//             child: TextFormField(
-//               decoration: const InputDecoration(
-//               suffixIcon: Icon(Icons.search_outlined),
-//               label: Text(
-//                   'Buscar',
-//                   style: TextStyle(color: Colors.white),
-//                 )
-//               ),
-//             ),
-//           ),
-//           const SizedBox(
-//             height: 30,
-//           ),
-//           Container(
-//             decoration: const BoxDecoration(
-//                 color: Color(0xFFAFCDEA),
-//                 borderRadius: BorderRadius.only(
-//                     topLeft: Radius.circular(40),
-//                     topRight: Radius.circular(40))),
-//             child: Column(
-//               children: [
-//                 const SizedBox(
-//                   height: 10,
-//                 ),
-//                 const Text(
-//                   'PARTIDAS',
-//                   style: TextStyle(
-//                       color: Colors.black,
-//                       fontWeight: FontWeight.bold,
-//                       decoration: TextDecoration.none,
-//                       fontSize: 25),
-//                 ),
-//                 (load)
-//                     ? SizedBox(
-//                         height: MediaQuery.of(context).size.height * 0.79,
-//                         child: const Center(
-//                           child: CircularProgressIndicator(),
-//                         ),
-//                       )
-//                     : (widget.data.isEmpty)
-//                         ? Column(
-//                             children: [
-//                               const Center(
-//                                 child: Text(
-//                                   'Vacio',
-//                                   style: TextStyle(
-//                                       color: Color(0xFF318CE7),
-//                                       fontWeight: FontWeight.bold,
-//                                       decoration: TextDecoration.none,
-//                                       fontSize: 40),
-//                                 ),
-//                               ),
-//                               const SizedBox(
-//                                 height: 20,
-//                               ),
-//                               IconButton(
-//                                   onPressed: () {},
-//                                   icon: const Icon(Icons.replay_outlined))
-//                             ],
-//                           )
-//                         : const SizedBox(
-//                             height: 20,
-//                           ),
-//                 SizedBox(
-//                   height: MediaQuery.of(context).size.height,
-//                   child: ListView.builder(
-//                     shrinkWrap: true,
-//                     itemCount: widget.data.length,
-//                     itemBuilder: (context, index) {
-//                       if (widget.data[index]['estado'] ==
-//                           widget.filtro[widget.currentIndex]) {
-//                         return Padding(
-//                           padding: const EdgeInsets.symmetric(vertical: 5),
-//                           child: Material(
-//                             child: ListTile(
-//                               title: Text(
-//                                 '${widget.data[index]["name"]}',
-//                                 style: const TextStyle(
-//                                     color: Colors.white,
-//                                     fontWeight: FontWeight.bold,
-//                                     decoration: TextDecoration.none,
-//                                     fontSize: 20),
-//                               ),
-//                               leading: ClipOval(
-//                                 child:
-//                                     widget.data[index]['path_image'] == null
-//                                         ? Container(
-//                                             decoration: BoxDecoration(
-//                                               borderRadius:
-//                                                   BorderRadius.circular(50),
-//                                               color: const Color(0xFFD9D9D9),
-//                                             ),
-//                                             child: const Image(
-//                                                 image: AssetImage(
-//                                                     'assets/groupImg.png'),
-//                                                 width: 40,
-//                                                 height: 40),
-//                                           )
-//                                         : Image.network(
-//                                             '${widget.data[index]['path_image']}',
-//                                             fit: BoxFit.cover,
-//                                           ),
-//                               ),
-//                               tileColor: const Color(0xFF318CE7),
-//                               subtitle: Column(
-//                                 crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: [
-//                                   Text(
-//                                     '${widget.data[index]['description']}',
-//                                     style:
-//                                         const TextStyle(color: Colors.white),
-//                                   ),
-//                                   Text(
-//                                     'Cuota: ${widget.data[index]['cuota']}',
-//                                     style:
-//                                         const TextStyle(color: Colors.white),
-//                                   ),
-//                                   Text(
-//                                     'Fecha de Inicio: ${widget.data[index]['start_date'].toString().substring(0, 10)}',
-//                                     style:
-//                                         const TextStyle(color: Colors.white),
-//                                   ),
-//                                 ],
-//                               ),
-//                               trailing: const Icon(
-//                                 Icons.arrow_forward_ios_rounded,
-//                                 color: Colors.black,
-//                               ),
-//                               onTap: () {
-//                                 Provider.of<PartidaProvider>(context,
-//                                         listen: false)
-//                                     .changePartida(
-//                                         newTitle: widget.data[index]['name'],
-//                                         newId: widget.data[index]['id']
-//                                             .toString(),
-//                                         newEstado: widget.data[index]
-//                                             ['estado'],
-//                                         newCuota: int.parse(widget.data[index]
-//                                                 ['cuota']
-//                                             .toString()),
-//                                         newPlayerTotal: int.parse(widget
-//                                             .data[index]['number_of_players']
-//                                             .toString()),
-//                                         newPeriodo: widget.data[index]
-//                                             ['period']['name']);
-//                                 context.push('/partida');
-//                                 // context.push('/push-details/${notifications[0].messageId}');
-//                               },
-//                             ),
-//                           ),
-//                         );
-//                       } else {
-//                         return Container();
-//                       }
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

@@ -109,7 +109,7 @@ class _QRupdateState extends State<QRupdate> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.push('/home');
+                        context.go('/home');
                       },
                     )
                   ),

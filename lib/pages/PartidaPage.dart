@@ -32,7 +32,7 @@ class _PartidaPageState extends State<PartidaPage> {
   Map<String, MaterialColor> color = {
     "Iniciado": Colors.green,
     "En espera": Colors.yellow,
-    "Finalizados": Colors.red
+    "Finalizado": Colors.red
   };
 
   late Timer _timer;
@@ -44,20 +44,15 @@ class _PartidaPageState extends State<PartidaPage> {
       final response = await dio.get('/participant/gamePk/${partida!.id}');
       data = response.data['data'];
       for (var participant in data) {
-        // print('${participant['player_id']} == ${player.id}');
         if(participant['player_id'] == player.id) {
           player.changeParticipantId(newId: participant['id']);
-          // print(participant['id']);
         }
       }
-      // print('Data Participantes: $data');
-      // print('Data Participantes: ${data[0]['player']['name']}');
     } on DioException catch (e) {
         if(e.response != null){
           print('data: ${e.response!.data}');
           print('headers: ${e.response!.headers}');
           print('requestOptions: ${e.response!.requestOptions}');
-          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
         }else{
           print('requestOptions: ${e.requestOptions}');
           print(e.message);
@@ -117,14 +112,16 @@ class _PartidaPageState extends State<PartidaPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getParticipants();
-    getCuotas();
-    getPuja();
-    _timer = Timer(const Duration(seconds: 1), () {
-      setState(() {
-        load = !load;
-      });
-    },);
+    reload();
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) { 
+      if(mounted){
+        setState(() { 
+          getParticipants();
+          getCuotas();
+          getPuja();
+        });
+      }
+    });
   }
 
   @override
@@ -188,7 +185,7 @@ class _PartidaPageState extends State<PartidaPage> {
                         child: InkWell(
                           child: const Icon(Icons.arrow_back_rounded,size: 50,),
                           onTap: () {
-                            context.pop();
+                            context.go('/home');
                           },
                         )
                       ),
@@ -215,7 +212,7 @@ class _PartidaPageState extends State<PartidaPage> {
                           ElevatedButton(onPressed: 
                           (statePuja)
                           ?() {
-                            context.push('/puja');
+                            context.go('/puja');
                           } 
                           : null
                           , child: 
@@ -498,7 +495,7 @@ class _PartidaPageState extends State<PartidaPage> {
                                                     newTotalAmount: dataCuota[index]['total_amount'].toString(),
                                                     newDestination_participant_id: dataCuota[index]['destination_participant_id']
                                                   );
-                                                  context.push('/qr-details/1');
+                                                  context.go('/qr-details/1');
                                                 }, 
                                                 icon: const Icon(Icons.qr_code_2), 
                                                 label: const Text('Ver Qr')

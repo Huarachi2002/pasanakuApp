@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pasanaku_app/config/router/app_router.dart';
 import 'package:pasanaku_app/config/theme/appTheme.dart';
+import 'package:pasanaku_app/domain/entities/push_message.dart';
 import 'package:pasanaku_app/providers/cuota_provider.dart';
 import 'package:pasanaku_app/providers/invitacion_provider.dart';
 import 'package:pasanaku_app/providers/partida_provider.dart';
@@ -16,7 +17,7 @@ import 'package:provider/provider.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  
+
   await NotificationsBloc.initializeFirebaseNotifications();
   runApp(
     MultiProvider(
@@ -30,7 +31,7 @@ void main() async{
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -61,7 +62,7 @@ class HandleNotificationInteractions extends StatefulWidget {
 }
 
 class _HandleNotificationInteractionsState extends State<HandleNotificationInteractions> {
-  
+
   Future<void> setupInteractedMessage() async {
     // Get any messages which caused the application to open from
     // a terminated state.
@@ -77,13 +78,20 @@ class _HandleNotificationInteractionsState extends State<HandleNotificationInter
     // Stream listener
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
-  
+
   void _handleMessage(RemoteMessage message) {
     context.read<NotificationsBloc>().handleRemoteMessage(message);
-    final messageData = context.watch<NotificationsBloc>().state.notifications;
-    final messageId = message.messageId?.replaceAll(':', '').replaceAll('%', '');
+    final user = Provider.of<UserProvider>(context,listen: false);
+    // final messageData = context.watch<NotificationsBloc>().state.notifications;
+    // final messageId = message.messageId?.replaceAll(':', '').replaceAll('%', '');
+    // final PushMessage? messageData = context.watch<NotificationsBloc>().getMessageById(messageId!);
     // context.read<PreviousRouteProvider>().changeRoute(newRoute: '/${messageData[messageData.length].data!['path']}/$messageId');
-    appRouter.push('/login');
+    if(user.state == 'no-authenticated'){
+      appRouter.push('/login');
+    }else{
+      appRouter.push('/home');
+    }
+
   }
 
   @override

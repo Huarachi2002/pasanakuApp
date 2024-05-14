@@ -134,11 +134,7 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
                           size: 50,
                         ),
                         onTap: () {
-                          if (context.canPop()) {
-                            context.pop();
-                            return;
-                          }
-                          context.push('/home');
+                          context.go('/home');
                         },
                       )
                     ),
@@ -276,7 +272,7 @@ class _InvitacionesPageState extends State<InvitacionesPage> {
                                                   newPeriodo: data[index]
                                                           ['game']['period']
                                                       ['name']);
-                                              context.push('/invitacion');
+                                              context.go('/invitacion');
                                             },
                                           ),
                                         ),

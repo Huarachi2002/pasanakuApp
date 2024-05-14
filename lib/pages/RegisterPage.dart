@@ -80,9 +80,9 @@ class _RegisterPageState extends State<RegisterPage> {
       // print('Response Invitaciones: ${response2.data['data']}');
       
       if(response2.data['data'].length > 0){
-        context.push('/invitations');
+        context.go('/invitations');
       }else{
-        context.push('/home');
+        context.go('/home');
       }
     }on DioException catch (e) {
         if(e.response != null){
@@ -396,7 +396,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(width: 4,),
                   TextButton(onPressed: (){
-                    context.push('/login');
+                    context.go('/login');
                   }, child: const Text('Ingresa ahora'))
                 ],
               )

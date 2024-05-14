@@ -22,9 +22,6 @@ class PujaPage extends StatefulWidget {
 }
 
 class _PujaPageState extends State<PujaPage> {
-  // PujaProvider? pujaProvider;
-  // UserProvider? player;
-  // PartidaProvider? game;
   int montoPuja = 0;
   String idPuja = '';
   int participantId = 0;
@@ -40,12 +37,9 @@ class _PujaPageState extends State<PujaPage> {
       final game = Provider.of<PartidaProvider>(context,listen: false);
       final response = await dio.get('/numbers/${game.id}');
       data = response.data['data'];
-      // print(data);
       for (var number in data) { 
         if(number['state']) idPuja = number['id'].toString(); 
-        // print('idPuja: $idPuja');
         if(number['player_id'] == player.id) statePujar = false;
-        // print('statePujar: $statePujar');
       }
       getPujar();
     } on DioException catch (e) {
@@ -53,7 +47,6 @@ class _PujaPageState extends State<PujaPage> {
           print('data: ${e.response!.data}');
           print('headers: ${e.response!.headers}');
           print('requestOptions: ${e.response!.requestOptions}');
-          // print('Message: ${e.response!.data['errors']['details'][0]["msg"]}');
         }else{
           print('requestOptions: ${e.requestOptions}');
           print(e.message);
@@ -127,6 +120,13 @@ class _PujaPageState extends State<PujaPage> {
         
       });
     });
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) { 
+      if(mounted){
+        setState(() { 
+          getNumbersPuja();
+        });
+      }
+    });
   }
 
   @override
@@ -187,7 +187,7 @@ class _PujaPageState extends State<PujaPage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.pop();
+                        context.go('/partida');
                       },
                     )
                   ),
@@ -277,9 +277,9 @@ class _PujaPageState extends State<PujaPage> {
                                                       ?
                                                         Row(
                                                           children: [
-                                                            const SizedBox(width: 50,),
+                                                            const SizedBox(width: 20,),
                                                             CupertinoButton.filled(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
                                                               borderRadius: BorderRadius.circular(10),
                                                               child: Text('$currentValue Bs'), 
                                                               onPressed: () => showCupertinoModalPopup(
@@ -307,7 +307,7 @@ class _PujaPageState extends State<PujaPage> {
                                                                 )
                                                               )
                                                             ),
-                                                            SizedBox(width: MediaQuery.of(context).size.width * 0.10,),
+                                                            SizedBox(width: MediaQuery.of(context).size.width * 0.05,),
                                                             ElevatedButton.icon(
                                                               onPressed: (){
                                                                 setState(() {

@@ -48,12 +48,12 @@ class _LoginPageState extends State<LoginPage> {
       final routePrevious = Provider.of<PreviousRouteProvider>(context, listen: false).route;
       // print('route: $routePrevious');
       if(routePrevious != ''){ 
-        context.push(routePrevious);
+        context.go(routePrevious);
       }else{
         if(response3.data['data'].length > 0){
-          context.push('/invitations');
+          context.go('/invitations');
         }else{
-          context.push('/home');
+          context.go('/home');
         }
       }
       
@@ -252,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
                     ),
                     onPressed:(){
-                      context.push('/register');
+                      context.go('/register');
                     }, 
                     child: const Text(
                       'Registrar',

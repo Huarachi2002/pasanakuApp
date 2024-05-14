@@ -96,7 +96,7 @@ class _ScanCodePageState extends State<ScanCodePage> {
                     child: InkWell(
                       child: const Icon(Icons.arrow_back_rounded,size: 50,),
                       onTap: () {
-                        context.push('/home');
+                        context.go('/home');
                       },
                     )
                   ),
@@ -174,7 +174,7 @@ class _ScanCodePageState extends State<ScanCodePage> {
                                               );
                                               // _controller.start();
                                               context.pop();
-                                              context.push('/qr-details/1');
+                                              context.go('/qr-details/1');
                                             }, 
                                             icon: const Icon(Icons.qr_code_2, size: 14,), 
                                             label: const Text('Ver QR')
@@ -225,7 +225,7 @@ class _ScanCodePageState extends State<ScanCodePage> {
                                       newTotalAmount: '100',
                                       newDestination_participant_id: Provider.of<UserProvider>(context,listen: false).id
                                     );
-                                    context.push('/qr-details/1');
+                                    context.go('/qr-details/1');
                                   }, 
                                   icon: const Icon(Icons.qr_code_2, size: 14,), 
                                   label: const Text('Ver QR')
